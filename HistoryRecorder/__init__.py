@@ -17,11 +17,12 @@ FILE_NAME_EXT = ".csv"
 FILE_NAME = FILE_NAME_BASE + FILE_NAME_EXT
 USER_FILE = os.path.join(USER_FILES_DIR, FILE_NAME)
 
-
 HEADERS = ['uid', 'sid', 'card_id', 'deck_id', 'card_cat', 'deck_cat',
-           'question', 'answer', 'ease', 'type', 'queue', 'last_shown',
-           'answered_at', 'think_time', 'grade_time', 'has_image', 'has_sound',
-           'total_study_time', 'ESTIMATED_INTERVAL']
+           'question', 'answer', 'question_has_sound', 'answer_has_sound',
+           'question_has_video', 'answer_has_video', 'question_has_image',
+           'answer_has_image', 'ease', 'type', 'queue', 'due', 'interval',
+           'answered_at', 'think_time', 'grade_time', 'total_study_time',
+           'ESTIMATED_INTERVAL']
 
 
 """

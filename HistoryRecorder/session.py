@@ -35,13 +35,10 @@ class Session:
     def save_answer(self, reviewer: Reviewer, card: Card, ease: int):
         self.last_answer = time.time()
         features = self.get_answer_features(card, ease)
+        print(features)
+        print(features.keys())
 
     def get_answer_features(self, card: Card, ease: int):
-        HEADERS = ['uid', 'sid', 'card_id', 'deck_id', 'card_cat', 'deck_cat',
-                   'question', 'answer', 'ease', 'maturity', 'last_shown',
-                   'answered_at', 'think_time', 'grade_time', 'has_image',
-                   'has_sound',
-                   'total_study_time', 'ESTIMATED_INTERVAL']
         features = FeatureExtractor(card)
         return {
             'uid': mw.pm.meta.get('id'),
@@ -52,15 +49,22 @@ class Session:
             'deck_cat': features.get_deck_category(),
             'question': features.get_question_text(),
             'answer': features.get_answer_text(),
+            'question_has_sound': features.question_has_sound(),
+            'answer_has_sound': features.answer_has_sound(),
+            'question_has_video': features.question_has_video(),
+            'answer_has_video': features.answer_has_video(),
+            'question_has_image': features.question_has_image(),
+            'answer_has_image': features.answer_has_image(),
             'ease': ease,
             'type': card.type,
             'queue': card.queue,
             'due': card.due,
             'interval': card.ivl,
-            'last_shown': ...,
             'answered_at': self.last_answer,
             'think_time': card.timeTaken(),
             'grade_time': self.last_answer - self.answer_shown_at,
+            'total_study_time': self.last_answer - self.start_time,
+            'ESTIMATED_INTERVAL': None  # Don't know how to get it
         }
 
 
