@@ -3,8 +3,12 @@ import os
 import shutil
 import uuid
 
+from anki.hooks import wrap
 from aqt.reviewer import Reviewer
-from aqt import mw
+from aqt import mw, gui_hooks
+
+from .session import session
+
 
 BASE_DIR = os.path.dirname(__file__)
 USER_FILES_DIR = os.path.join(BASE_DIR, 'user_files')
@@ -14,10 +18,18 @@ FILE_NAME = FILE_NAME_BASE + FILE_NAME_EXT
 USER_FILE = os.path.join(USER_FILES_DIR, FILE_NAME)
 
 
-HEADERS = ['uid', 'card_id', 'deck_id', 'card_cat', 'deck_cat', 'question',
-           'answer', 'ease', 'maturity', 'last_shown', 'answered_at',
-           'think_time', 'grade_time', 'has_image', 'has_sound',
+HEADERS = ['uid', 'sid', 'card_id', 'deck_id', 'card_cat', 'deck_cat',
+           'question', 'answer', 'ease', 'type', 'queue', 'last_shown',
+           'answered_at', 'think_time', 'grade_time', 'has_image', 'has_sound',
            'total_study_time', 'ESTIMATED_INTERVAL']
+
+
+"""
+reviewer_did_show_answer
+reviewer_did_answer_card
+review_did_undo
+
+"""
 
 
 def ensure_directory_exists():
@@ -68,3 +80,20 @@ def init():
 
 
 init()
+
+
+def did_answer_card(reviewer, card, ease):
+    session.save_answer(reviewer, card, ease)
+
+
+def start_session(self):
+    session.start()
+
+
+def stop_session():
+    session.stop()
+
+
+Reviewer.show = wrap(Reviewer.show, start_session)
+gui_hooks.reviewer_will_end.append(stop_session)
+gui_hooks.reviewer_did_answer_card.append(did_answer_card)
