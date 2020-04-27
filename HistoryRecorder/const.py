@@ -13,3 +13,10 @@ VIDEO_FORMATS = {
     ".mp2", ".mpeg", ".mpe", ".mpv", ".mpg, .mpeg, .m2v", ".m4v", ".svi",
     ".3gp", ".3g2", ".mxf", ".roq", ".nsv", ".flv .f4v .f4p .f4a .f4b"
 }
+
+HEADERS = ['uid', 'sid', 'card_id', 'deck_id', 'card_cat', 'deck_cat',
+           'question', 'answer', 'question_has_sound', 'answer_has_sound',
+           'question_has_video', 'answer_has_video', 'question_has_image',
+           'answer_has_image', 'ease', 'type', 'queue', 'due', 'interval',
+           'answered_at', 'think_time', 'grade_time', 'total_study_time',
+           'ESTIMATED_INTERVAL']

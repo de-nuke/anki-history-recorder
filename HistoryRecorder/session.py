@@ -7,6 +7,7 @@ from aqt.reviewer import Reviewer
 from aqt import mw
 
 from HistoryRecorder.features import FeatureExtractor
+from HistoryRecorder.storage import Storage
 
 
 @dataclass
@@ -16,6 +17,7 @@ class Session:
     last_duration: float = 0
     sid: Optional[int] = None
     start_time: Optional[float] = None
+    storage: Storage = None
 
     def start(self):
         self.reset()
@@ -23,7 +25,7 @@ class Session:
 
     def reset(self):
         for field in fields(self):
-            print(field)
+            setattr(self, field.name, field.default)
 
     def stop(self):
         self.last_duration = time.time() - self.start_time
@@ -35,8 +37,7 @@ class Session:
     def save_answer(self, reviewer: Reviewer, card: Card, ease: int):
         self.last_answer = time.time()
         features = self.get_answer_features(card, ease)
-        print(features)
-        print(features.keys())
+        self.storage.save(features)
 
     def get_answer_features(self, card: Card, ease: int):
         features = FeatureExtractor(card)
@@ -69,4 +70,4 @@ class Session:
 
 
 # Init global session object
-session = Session()
+session = Session(storage=Storage())
