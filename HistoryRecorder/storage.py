@@ -5,14 +5,11 @@ import shutil
 from aqt import mw
 
 from .const import HEADERS
-
+from .utils import normalize_to_filename
 
 BASE_DIR = os.path.dirname(__file__)
 USER_FILES_DIR = os.path.join(BASE_DIR, 'user_files')
-FILE_NAME_BASE = str(mw.pm.meta.get('id'))
 FILE_NAME_EXT = ".csv"
-FILE_NAME = FILE_NAME_BASE + FILE_NAME_EXT
-USER_FILE = os.path.join(USER_FILES_DIR, FILE_NAME)
 
 
 def ensure_directory_exists():
@@ -25,48 +22,70 @@ def ensure_directory_exists():
             print("Successfully created the directory %s " % USER_FILES_DIR)
 
 
-def create_initial_file(name=None):
-    if name is None:
-        name = USER_FILE
-    with open(name, 'w') as f:
+def create_initial_file(path):
+    with open(path, 'w') as f:
         writer = csv.writer(f)
         writer.writerow(HEADERS)
 
 
-def backup_old_file():
+def backup_old_file(file_path):
     i = 0
-    file_name = FILE_NAME_BASE + ".old%s" + FILE_NAME_EXT
-    path = os.path.join(USER_FILES_DIR, file_name)
+    path = file_path + ".old%s"
     while os.path.exists(path % i):
         i += 1
-    shutil.copy2(USER_FILE, path % i)
+    shutil.copy2(file_path, path % i)
 
 
-def init_storage():
-    """Create history file if it doesn't exist"""
-    ensure_directory_exists()
-    try:
-        correct = True
-        with open(USER_FILE) as f:
-            reader = csv.reader(f)
-            try:
-                first_row = next(reader)
-                if not len(first_row) == len(HEADERS):
-                    correct = False
-            except StopIteration:
-                correct = False
-        if not correct:
-            backup_old_file()
-            create_initial_file()
-    except FileNotFoundError:
-        create_initial_file()
+def get_profile_name():
+    profile_name = mw.pm.name
+    if not profile_name:
+        profile_name = mw.pm.meta.get('id') or "unknown"
+    return profile_name
+
+
+def get_file_name():
+    return normalize_to_filename(get_profile_name()) + FILE_NAME_EXT
+
+
+def get_file_path():
+    return os.path.join(USER_FILES_DIR, get_file_name())
 
 
 class Storage:
     def __init__(self):
-        init_storage()
+        self.file_path = None
 
     def save(self, data: dict):
-        with open(USER_FILE, 'a') as f:
+        with self.get_file() as f:
             writer = csv.DictWriter(f, fieldnames=HEADERS)
             writer.writerow(data)
+
+    def get_file(self):
+        if self.file_path:
+            return open(self.file_path, 'a')
+        else:
+            self.init_storage()
+
+    def init_storage(self):
+        """
+        Create history file if it doesn't exist and return its name
+        """
+        ensure_directory_exists()
+        file_path = get_file_path()
+        try:
+            correct = True
+            with open(file_path) as f:
+                reader = csv.reader(f)
+                try:
+                    first_row = next(reader)
+                    if not len(first_row) == len(HEADERS):
+                        correct = False
+                except StopIteration:
+                    correct = False
+            if not correct:
+                backup_old_file(file_path)
+                create_initial_file(file_path)
+        except FileNotFoundError:
+            create_initial_file(file_path)
+
+        self.file_path = file_path

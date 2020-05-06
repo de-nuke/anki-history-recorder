@@ -19,13 +19,17 @@ class Session:
     start_time: Optional[float] = None
     storage: Storage = None
 
+    exclude_reset = {'storage', }
+
     def start(self):
         self.reset()
         self.start_time = time.time()
+        self.storage.init_storage()
 
     def reset(self):
         for field in fields(self):
-            setattr(self, field.name, field.default)
+            if field.name not in self.exclude_reset:
+                setattr(self, field.name, field.default)
 
     def stop(self):
         self.last_duration = time.time() - self.start_time
@@ -47,7 +51,7 @@ class Session:
             'card_id': card.id,
             'deck_id': card.did,
             'card_cat': features.get_category(),
-            'deck_cat': features.get_deck_category(),
+            'deck_cat': features.get_deck_category(),  # index by words
             'question': features.get_question_text(),
             'answer': features.get_answer_text(),
             'question_has_sound': features.question_has_sound(),
