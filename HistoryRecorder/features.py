@@ -8,6 +8,9 @@ from .const import AUDIO_FORMATS, VIDEO_FORMATS
 from .html2text import HTML2Text
 
 
+CLOZE = """<span class=cloze>[...]</span>"""
+
+
 def is_sound(tag: SoundOrVideoTag):
     return tag.filename.rsplit(".", 1)[-1] in AUDIO_FORMATS
 
@@ -16,13 +19,104 @@ def is_video(tag: SoundOrVideoTag):
     return tag.filename.rsplit(".", 1)[-1] in VIDEO_FORMATS
 
 
+def has_cloze(text):
+    return CLOZE in text
+
+
+class CardTextProcessor:
+    def __init__(self, card: Card):
+        self.card = card
+        self.card_output = self.card.render_output()
+        self.h = HTML2Text()
+        self.h.unicode_snob = True
+        self.h.ignore_images = True
+
+        self.clean_question_text = None
+        self.clean_answer_text = None
+
+    def get_clean_question_text(self):
+        if self.clean_question_text is None:
+            self.clean_question_text = self._get_clean_text(
+                self.card_output.question_text
+            )
+        return self.clean_question_text
+
+    def get_clean_answer_text(self):
+        if self.clean_answer_text is None:
+            self.clean_answer_text = self.strip_out_question_text(
+                self._get_clean_text(
+                    self.card_output.answer_text
+                )
+            )
+        return self.clean_answer_text
+
+    def get_question_noise(self):
+        original = len(self.card_output.question_text)
+        clean = len(self.get_clean_question_text()) or 1
+        return original / clean
+
+    def get_answer_noise(self):
+        original = len(self.card_output.answer_text)
+        clean = len(self.get_clean_answer_text()) or 1
+        return original / clean
+
+    def _get_clean_text(self, text):
+        text = self.h.handle(text)
+        text = re.sub(r"(?i)<(br ?/?|div|p)>", " ", text)
+        text = re.sub(r"\[sound:[^]]+\]", "", text)
+        text = re.sub(r"\[anki:[^]]+\]", "", text)
+        text = re.sub(r"\[\[type:[^]]+\]\]", "", text)
+        text = re.sub(r"[ \n\t]+", " ", text)
+        text = text.replace("\t", " " * 8)
+        text = text.replace("\n", " ")
+        text = re.sub("(?i)<style>.*?</style>", "", text)
+        if '"' in text:
+            text = '"' + text.replace('"', '""') + '"'
+        text = re.sub(r"!\[\]\(.*\)", "", text)
+        text = text.replace("* * *", "")
+        text = self.strip_out_deck_name(text)
+        text = text.strip()
+        return text
+
+    def strip_out_deck_name(self, text):
+        deck = self.card.col.decks.get(self.card.did, default=False)
+        if deck:
+            deck_name = deck.get('name')
+            if deck_name:
+                if deck_name in text:
+                    text = text.replace(deck_name, "")
+                root_deck_name = deck_name.split("::")[0]
+                if root_deck_name:
+                    text = text.replace(root_deck_name, "")
+        return text
+
+    def strip_out_question_text(self, text):
+        """Use only for answer text!"""
+        clean_question = self.remove_cloze(self.get_clean_question_text())
+        if clean_question in text:
+            return text.replace(clean_question, "")
+
+        # If clean question wasn't found, try to find original text
+        if self.card_output.question_text in text:
+            return text.replace(self.card_output.question_text, "")
+
+        return text
+
+    def remove_cloze(self, text):
+        if has_cloze(self.card_output.question_text):
+            if CLOZE in text:
+                return text.replace(CLOZE, "")
+            elif "[...]" in text:
+                return text.replace("[...]", "")
+        return text
+
+
 class FeatureExtractor:
     def __init__(self, card: Card):
         self.card = card
         self.card_output = self.card.render_output()
         self.note = self.card.note()
-        self.h = HTML2Text()
-        self.h.unicode_snob = True
+        self.card_text_processor = CardTextProcessor(self.card)
 
     def get_category(self):
         return ''
@@ -31,10 +125,10 @@ class FeatureExtractor:
         return ''
 
     def get_question_text(self):
-        return self.h.handle(self.card_output.question_text)
+        return self.card_text_processor.get_clean_question_text()
 
     def get_answer_text(self):
-        return self.h.handle(self.card_output.answer_text)
+        return self.card_text_processor.get_clean_answer_text()
 
     def question_has_sound(self):
         try:
