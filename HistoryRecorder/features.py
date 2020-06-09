@@ -118,11 +118,14 @@ class FeatureExtractor:
         self.note = self.card.note()
         self.card_text_processor = CardTextProcessor(self.card)
 
-    def get_category(self):
-        return ''
+    def get_deck_name(self):
+        deck = self.card.col.decks.get(self.card.did)
+        if deck:
+            return deck.get("name", "")
+        return ""
 
-    def get_deck_category(self):
-        return ''
+    def card_was_new(self):
+        return getattr(self.card, 'wasNew', "")
 
     def get_question_text(self):
         return self.card_text_processor.get_clean_question_text()
@@ -172,12 +175,12 @@ class FeatureExtractor:
 
     def question_has_image(self):
         return any(
-            re.compile(regexp).match(self.card_output.question_text)
+            re.compile(regexp).search(self.card_output.question_text)
             for regexp in MediaManager.imgRegexps
         )
 
     def answer_has_image(self):
         return any(
-            re.compile(regexp).match(self.card_output.answer_text)
+            re.compile(regexp).search(self.card_output.answer_text)
             for regexp in MediaManager.imgRegexps
         )

@@ -1,3 +1,4 @@
+import random
 import time
 from dataclasses import dataclass, fields
 from typing import Optional
@@ -19,7 +20,7 @@ class Session:
     start_time: Optional[float] = None
     storage: Storage = None
 
-    exclude_reset = {'storage', }
+    exclude_reset = {'storage', 'sid'}
 
     def start(self):
         self.reset()
@@ -50,8 +51,7 @@ class Session:
             'sid': self.sid,
             'card_id': card.id,
             'deck_id': card.did,
-            'card_cat': features.get_category(),
-            'deck_cat': features.get_deck_category(),  # index by words
+            'deck_name': features.get_deck_name(),  # index by words - later
             'question': features.get_question_text(),
             'answer': features.get_answer_text(),
             'question_has_sound': features.question_has_sound(),
@@ -60,6 +60,7 @@ class Session:
             'answer_has_video': features.answer_has_video(),
             'question_has_image': features.question_has_image(),
             'answer_has_image': features.answer_has_image(),
+            'card_was_new': features.card_was_new(),
             'ease': ease,
             'type': card.type,
             'queue': card.queue,
@@ -74,4 +75,4 @@ class Session:
 
 
 # Init global session object
-session = Session(storage=Storage())
+session = Session(storage=Storage(), sid=random.random())
