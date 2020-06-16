@@ -4,7 +4,8 @@ from anki.cards import Card
 from anki.media import MediaManager
 from anki.sound import SoundOrVideoTag
 
-from .const import AUDIO_FORMATS, VIDEO_FORMATS
+from .const import AUDIO_FORMATS, VIDEO_FORMATS, CARD_TYPES, TYPE_MAP, \
+    QUEUE_MAP
 from .html2text import HTML2Text
 
 
@@ -112,8 +113,9 @@ class CardTextProcessor:
 
 
 class FeatureExtractor:
-    def __init__(self, card: Card):
+    def __init__(self, card: Card, prev_card_version: Card):
         self.card = card
+        self.prev_card_version = prev_card_version
         self.card_output = self.card.render_output()
         self.note = self.card.note()
         self.card_text_processor = CardTextProcessor(self.card)
@@ -184,3 +186,15 @@ class FeatureExtractor:
             re.compile(regexp).search(self.card_output.answer_text)
             for regexp in MediaManager.imgRegexps
         )
+
+    def get_card_type(self):
+        return TYPE_MAP.get(self.card.type)
+
+    def get_prev_card_type(self):
+        return TYPE_MAP.get(self.card.type)
+
+    def get_prev_card_queue(self):
+        return QUEUE_MAP.get(self.prev_card_version.queue)
+
+    def get_card_queue(self):
+        return QUEUE_MAP.get(self.card.queue)

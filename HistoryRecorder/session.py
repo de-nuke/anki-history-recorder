@@ -1,5 +1,6 @@
 import random
 import time
+from copy import copy
 from dataclasses import dataclass, fields
 from typing import Optional
 
@@ -19,6 +20,7 @@ class Session:
     sid: Optional[int] = None
     start_time: Optional[float] = None
     storage: Storage = None
+    prev_card_version: Card = None
 
     exclude_reset = {'storage', 'sid'}
 
@@ -44,8 +46,12 @@ class Session:
         features = self.get_answer_features(card, ease)
         self.storage.save(features)
 
+    def before_card_show(self, text: str, card: Card, kind: str) -> str:
+        self.prev_card_version = copy(card)
+        return text
+
     def get_answer_features(self, card: Card, ease: int):
-        features = FeatureExtractor(card)
+        features = FeatureExtractor(card, self.prev_card_version)
         return {
             'uid': mw.pm.meta.get('id'),
             'sid': self.sid,
@@ -62,8 +68,10 @@ class Session:
             'answer_has_image': features.answer_has_image(),
             'card_was_new': features.card_was_new(),
             'ease': ease,
-            'type': card.type,
-            'queue': card.queue,
+            'type': features.get_prev_card_type(),
+            'new_type': features.get_card_type(),
+            'queue': features.get_prev_card_queue(),
+            'new_queue': features.get_card_queue(),
             'due': card.due,
             'interval': card.ivl,
             'answered_at': self.last_answer,

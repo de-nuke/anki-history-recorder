@@ -1,3 +1,5 @@
+from types import SimpleNamespace
+
 AUDIO_FORMATS = {
     "3gp", "aa", "aac", "aax", "act", "aiff", "alac", "amr", "ape", "au",
     "awb", "dct", "dss", "dvf", "flac", "gsm", "iklax", "ivs", "m4a", "m4b",
@@ -31,7 +33,9 @@ HEADERS = [
     'card_was_new',
     'ease',
     'type',
+    'new_type',
     'queue',
+    'new_queue',
     'due',
     'interval',
     'answered_at',
@@ -40,3 +44,19 @@ HEADERS = [
     'total_study_time',
     'ESTIMATED_INTERVAL'
 ]
+
+
+CARD_TYPES = SimpleNamespace(NEW="new", LEARNING="learning", DUE="due")
+
+
+TYPE_MAP = {
+    0: CARD_TYPES.NEW,
+    1: CARD_TYPES.LEARNING,
+    2: CARD_TYPES.DUE,
+}
+
+QUEUE_MAP = {
+    0: CARD_TYPES.NEW,
+    1: CARD_TYPES.LEARNING,
+    2: CARD_TYPES.DUE,
+}
