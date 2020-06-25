@@ -4,8 +4,8 @@ from anki.cards import Card
 from anki.media import MediaManager
 from anki.sound import SoundOrVideoTag
 
-from .const import AUDIO_FORMATS, VIDEO_FORMATS, CARD_TYPES, TYPE_MAP, \
-    QUEUE_MAP
+from .const import AUDIO_FORMATS, VIDEO_FORMATS, TYPE_MAP, \
+    QUEUE_MAP, MODEL_TYPES_MAP
 from .html2text import HTML2Text
 
 
@@ -126,14 +126,29 @@ class FeatureExtractor:
             return deck.get("name", "")
         return ""
 
-    def card_was_new(self):
-        return getattr(self.card, 'wasNew', "")
-
     def get_question_text(self):
         return self.card_text_processor.get_clean_question_text()
 
     def get_answer_text(self):
         return self.card_text_processor.get_clean_answer_text()
+
+    def get_note_type(self):
+        note_type = self.card.note_type()
+        if not note_type:
+            return ""
+
+        model_name = note_type.get("name", "")
+        match = re.match(r"^(?P<name>.+)-[\w\d]+$", model_name)
+        if match:
+            return match.groupdict()['name']
+        else:
+            return model_name
+
+    def model_type(self):
+        note_type = self.card.note_type()
+        if note_type:
+            return MODEL_TYPES_MAP.get(note_type.get("type")) or ""
+        return ""
 
     def question_has_sound(self):
         try:
@@ -198,3 +213,24 @@ class FeatureExtractor:
 
     def get_card_queue(self):
         return QUEUE_MAP.get(self.card.queue)
+
+    def get_last_interval(self):
+        return self._get_row_from_revlog("lastIvl")
+
+    def get_estimated_interval(self):
+        return self._get_row_from_revlog("ivl")
+
+    def _get_row_from_revlog(self, column_name: str):
+        rows = self.card.col.db.execute(
+            f"""select {column_name}
+                from revlog
+                where cid = ? 
+                order by id desc
+                limit 1
+            """,
+            self.card.id
+        )
+        if rows:
+            return rows[0][0]
+        else:
+            return ""

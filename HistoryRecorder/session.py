@@ -15,7 +15,7 @@ from HistoryRecorder.storage import Storage
 @dataclass
 class Session:
     answer_shown_at: float = 0
-    last_answer: float = 0
+    answered_at: float = 0
     last_duration: float = 0
     sid: Optional[int] = None
     start_time: Optional[float] = None
@@ -38,11 +38,11 @@ class Session:
         self.last_duration = time.time() - self.start_time
         self.start_time = None
 
-    def save_answer_shown(self):
+    def save_answer_shown(self, card):
         self.answer_shown_at = time.time()
 
     def save_answer(self, reviewer: Reviewer, card: Card, ease: int):
-        self.last_answer = time.time()
+        self.answered_at = time.time()
         features = self.get_answer_features(card, ease)
         self.storage.save(features)
 
@@ -55,30 +55,36 @@ class Session:
         return {
             'uid': mw.pm.meta.get('id'),
             'sid': self.sid,
+            'timestamp': time.time(),
             'card_id': card.id,
             'deck_id': card.did,
-            'deck_name': features.get_deck_name(),  # index by words - later
+            'deck_name': features.get_deck_name(),
             'question': features.get_question_text(),
             'answer': features.get_answer_text(),
+            'note_type': features.get_note_type(),
+            'model_type': features.model_type(),
             'question_has_sound': features.question_has_sound(),
             'answer_has_sound': features.answer_has_sound(),
             'question_has_video': features.question_has_video(),
             'answer_has_video': features.answer_has_video(),
             'question_has_image': features.question_has_image(),
             'answer_has_image': features.answer_has_image(),
-            'card_was_new': features.card_was_new(),
             'ease': ease,
             'type': features.get_prev_card_type(),
             'new_type': features.get_card_type(),
             'queue': features.get_prev_card_queue(),
             'new_queue': features.get_card_queue(),
             'due': card.due,
-            'interval': card.ivl,
-            'answered_at': self.last_answer,
-            'think_time': card.timeTaken(),
-            'grade_time': self.last_answer - self.answer_shown_at,
-            'total_study_time': self.last_answer - self.start_time,
-            'ESTIMATED_INTERVAL': None  # Don't know how to get it
+            'last_interval': features.get_last_interval(),
+            'reps': card.reps,
+            'answered_at': time.strftime(
+                "%d-%m-%Y %H:%M:%S",
+                time.localtime(self.answered_at)
+            ),
+            'time_taken': card.timeTaken(),
+            'grade_time': self.answered_at - self.answer_shown_at,
+            'total_study_time': self.answered_at - self.start_time,
+            'ESTIMATED_INTERVAL': features.get_estimated_interval()
         }
 
 

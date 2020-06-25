@@ -1,5 +1,7 @@
 from types import SimpleNamespace
 
+from anki.consts import MODEL_CLOZE, MODEL_STD
+
 AUDIO_FORMATS = {
     "3gp", "aa", "aac", "aax", "act", "aiff", "alac", "amr", "ape", "au",
     "awb", "dct", "dss", "dvf", "flac", "gsm", "iklax", "ivs", "m4a", "m4b",
@@ -19,27 +21,30 @@ VIDEO_FORMATS = {
 HEADERS = [
     'uid',
     'sid',
+    'timestamp',
     'card_id',
     'deck_id',
     'deck_name',
     'question',
     'answer',
+    'note_type',
+    'model_type',
     'question_has_sound',
     'answer_has_sound',
     'question_has_video',
     'answer_has_video',
     'question_has_image',
     'answer_has_image',
-    'card_was_new',
     'ease',
     'type',
     'new_type',
     'queue',
     'new_queue',
     'due',
-    'interval',
+    'reps',
+    'last_interval',
     'answered_at',
-    'think_time',
+    'time_taken',
     'grade_time',
     'total_study_time',
     'ESTIMATED_INTERVAL'
@@ -59,4 +64,10 @@ QUEUE_MAP = {
     0: CARD_TYPES.NEW,
     1: CARD_TYPES.LEARNING,
     2: CARD_TYPES.DUE,
+}
+
+
+MODEL_TYPES_MAP = {
+    MODEL_CLOZE: "CLOZE",
+    MODEL_STD: "STANDARD"
 }
