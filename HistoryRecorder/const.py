@@ -1,6 +1,10 @@
 from types import SimpleNamespace
 
-from anki.consts import MODEL_CLOZE, MODEL_STD
+from anki.consts import MODEL_CLOZE, MODEL_STD, CARD_TYPE_NEW, CARD_TYPE_LRN, \
+    CARD_TYPE_RELEARNING, CARD_TYPE_REV, QUEUE_TYPE_PREVIEW, \
+    QUEUE_TYPE_SIBLING_BURIED, QUEUE_TYPE_MANUALLY_BURIED, \
+    QUEUE_TYPE_SUSPENDED, QUEUE_TYPE_LRN, QUEUE_TYPE_NEW, QUEUE_TYPE_REV, \
+    QUEUE_TYPE_DAY_LEARN_RELEARN
 
 AUDIO_FORMATS = {
     "3gp", "aa", "aac", "aax", "act", "aiff", "alac", "amr", "ape", "au",
@@ -27,8 +31,13 @@ HEADERS = [
     'deck_name',
     'question',
     'answer',
+    'question_fields',
+    'answer_fields',
     'note_type',
     'model_type',
+    'question_has_cloze',
+    'question_has_type_in',
+    'question_has_type_in_cloze',
     'question_has_sound',
     'answer_has_sound',
     'question_has_video',
@@ -51,19 +60,22 @@ HEADERS = [
 ]
 
 
-CARD_TYPES = SimpleNamespace(NEW="new", LEARNING="learning", DUE="due")
-
-
 TYPE_MAP = {
-    0: CARD_TYPES.NEW,
-    1: CARD_TYPES.LEARNING,
-    2: CARD_TYPES.DUE,
+    CARD_TYPE_NEW: "new",
+    CARD_TYPE_LRN: "learning",
+    CARD_TYPE_REV: "review",
+    CARD_TYPE_RELEARNING: "relearning"
 }
 
 QUEUE_MAP = {
-    0: CARD_TYPES.NEW,
-    1: CARD_TYPES.LEARNING,
-    2: CARD_TYPES.DUE,
+    QUEUE_TYPE_MANUALLY_BURIED: "manually_burried",
+    QUEUE_TYPE_SIBLING_BURIED: "sibling_buried",
+    QUEUE_TYPE_SUSPENDED: "suspended",
+    QUEUE_TYPE_NEW: "new",
+    QUEUE_TYPE_LRN: "learning",
+    QUEUE_TYPE_REV: "review",
+    QUEUE_TYPE_DAY_LEARN_RELEARN: "day_learn_relearn",
+    QUEUE_TYPE_PREVIEW: "preview",
 }
 
 

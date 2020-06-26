@@ -1,4 +1,5 @@
 import re
+from typing import Iterable, OrderedDict
 
 from anki.cards import Card
 from anki.media import MediaManager
@@ -10,18 +11,23 @@ from .html2text import HTML2Text
 
 
 CLOZE = """<span class=cloze>[...]</span>"""
+field_name_regex = re.compile(r"\{\{(?P<field_name>[^}]+)}}")
 
 
-def is_sound(tag: SoundOrVideoTag):
+def is_sound(tag: SoundOrVideoTag) -> bool:
     return tag.filename.rsplit(".", 1)[-1] in AUDIO_FORMATS
 
 
-def is_video(tag: SoundOrVideoTag):
+def is_video(tag: SoundOrVideoTag) -> bool:
     return tag.filename.rsplit(".", 1)[-1] in VIDEO_FORMATS
 
 
-def has_cloze(text):
+def has_cloze(text: str) -> bool:
     return CLOZE in text
+
+
+def remove_duplicates(sequence: Iterable) -> list:
+    return list(OrderedDict.fromkeys(sequence))
 
 
 class CardTextProcessor:
@@ -32,83 +38,60 @@ class CardTextProcessor:
         self.h.unicode_snob = True
         self.h.ignore_images = True
 
-        self.clean_question_text = None
-        self.clean_answer_text = None
+        self._clean_texts = None
 
     def get_clean_question_text(self):
-        if self.clean_question_text is None:
-            self.clean_question_text = self._get_clean_text(
-                self.card_output.question_text
-            )
-        return self.clean_question_text
+        if self._clean_texts is None:
+            self._clean_texts = self._get_clean_texts()
+        return self._clean_texts[0]
 
     def get_clean_answer_text(self):
-        if self.clean_answer_text is None:
-            self.clean_answer_text = self.strip_out_question_text(
-                self._get_clean_text(
-                    self.card_output.answer_text
-                )
-            )
-        return self.clean_answer_text
+        if self._clean_texts is None:
+            self._clean_texts = self._get_clean_texts()
+        return self._clean_texts[1]
 
-    def get_question_noise(self):
-        original = len(self.card_output.question_text)
-        clean = len(self.get_clean_question_text()) or 1
-        return original / clean
+    def _get_clean_texts(self):
+        card_note = self.card.note()
+        items = dict(card_note.items())
+        qfmt = self.card.template().get('qfmt')
+        afmt = self.card.template().get('afmt')
+        field_names_q = remove_duplicates(field_name_regex.findall(qfmt))
+        field_names_a = remove_duplicates(field_name_regex.findall(afmt))
 
-    def get_answer_noise(self):
-        original = len(self.card_output.answer_text)
-        clean = len(self.get_clean_answer_text()) or 1
-        return original / clean
+        field_names_a = [
+            fn for fn in field_names_a if fn not in set(field_names_q)
+        ]
+        items_q = [
+            self._clean_text(items[field_name])
+            for field_name in field_names_q
+            if field_name in items
+        ]
+        items_a = [
+            self._clean_text(items[field_name])
+            for field_name in field_names_a
+            if field_name in items
+        ]
 
-    def _get_clean_text(self, text):
+        items_q = list(filter(len, items_q))
+        items_a = list(filter(len, items_a))
+
+        return " ".join(items_q), " ".join(items_a)
+
+    def _clean_text(self, text):
         text = self.h.handle(text)
-        text = re.sub(r"(?i)<(br ?/?|div|p)>", " ", text)
+        # text = re.sub(r"(?i)<(br ?/?|div|p)>", " ", text)
         text = re.sub(r"\[sound:[^]]+\]", "", text)
         text = re.sub(r"\[anki:[^]]+\]", "", text)
         text = re.sub(r"\[\[type:[^]]+\]\]", "", text)
         text = re.sub(r"[ \n\t]+", " ", text)
         text = text.replace("\t", " " * 8)
         text = text.replace("\n", " ")
-        text = re.sub("(?i)<style>.*?</style>", "", text)
+        # text = re.sub("(?i)<style>.*?</style>", "", text)
         if '"' in text:
             text = '"' + text.replace('"', '""') + '"'
         text = re.sub(r"!\[\]\(.*\)", "", text)
         text = text.replace("* * *", "")
-        text = self.strip_out_deck_name(text)
         text = text.strip()
-        return text
-
-    def strip_out_deck_name(self, text):
-        deck = self.card.col.decks.get(self.card.did, default=False)
-        if deck:
-            deck_name = deck.get('name')
-            if deck_name:
-                if deck_name in text:
-                    text = text.replace(deck_name, "")
-                root_deck_name = deck_name.split("::")[0]
-                if root_deck_name:
-                    text = text.replace(root_deck_name, "")
-        return text
-
-    def strip_out_question_text(self, text):
-        """Use only for answer text!"""
-        clean_question = self.remove_cloze(self.get_clean_question_text())
-        if clean_question in text:
-            return text.replace(clean_question, "")
-
-        # If clean question wasn't found, try to find original text
-        if self.card_output.question_text in text:
-            return text.replace(self.card_output.question_text, "")
-
-        return text
-
-    def remove_cloze(self, text):
-        if has_cloze(self.card_output.question_text):
-            if CLOZE in text:
-                return text.replace(CLOZE, "")
-            elif "[...]" in text:
-                return text.replace("[...]", "")
         return text
 
 
@@ -131,6 +114,18 @@ class FeatureExtractor:
 
     def get_answer_text(self):
         return self.card_text_processor.get_clean_answer_text()
+
+    def get_question_fields(self):
+        q_fields = field_name_regex.findall(
+            self.card.template().get('qfmt', "")
+        )
+        return ", ".join(set(q_fields))
+
+    def get_answer_fields(self):
+        a_fields = field_name_regex.findall(
+            self.card.template().get('afmt', "")
+        )
+        return ", ".join(set(a_fields))
 
     def get_note_type(self):
         note_type = self.card.note_type()
@@ -203,10 +198,11 @@ class FeatureExtractor:
         )
 
     def get_card_type(self):
-        return TYPE_MAP.get(self.card.type)
+        return TYPE_MAP.get(self.card.type, self.card.type)
 
     def get_prev_card_type(self):
-        return TYPE_MAP.get(self.card.type)
+        return TYPE_MAP.get(self.prev_card_version.type,
+                            self.prev_card_version.type)
 
     def get_prev_card_queue(self):
         return QUEUE_MAP.get(self.prev_card_version.queue)
@@ -218,7 +214,7 @@ class FeatureExtractor:
         return self._get_row_from_revlog("lastIvl")
 
     def get_estimated_interval(self):
-        return self._get_row_from_revlog("ivl")
+        return self.card.ivl
 
     def _get_row_from_revlog(self, column_name: str):
         rows = self.card.col.db.execute(
@@ -234,3 +230,16 @@ class FeatureExtractor:
             return rows[0][0]
         else:
             return ""
+
+    def has_cloze(self):
+        return has_cloze(self.card_output.question_text)
+
+    def has_type_in(self):
+        return bool(
+            re.findall(r"\[\[type:.+]]", self.card_output.question_text)
+        )
+
+    def has_type_in_cloze(self):
+        return bool(
+            re.findall(r"\[\[type:cloze:.+]]", self.card_output.question_text)
+        )
