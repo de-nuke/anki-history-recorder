@@ -83,3 +83,7 @@ MODEL_TYPES_MAP = {
     MODEL_CLOZE: "CLOZE",
     MODEL_STD: "STANDARD"
 }
+
+UPLOAD_HOST = 'history-recorder-storage-app.herokuapp.com'
+UPLOAD_PATH = '/form-upload'
+FIELD_NAME = 'file'
