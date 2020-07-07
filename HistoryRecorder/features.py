@@ -227,7 +227,10 @@ class FeatureExtractor:
             self.card.id
         )
         if rows:
-            row = rows.fetchone()
+            if isinstance(rows, list):  # Linux - "rows" is a list
+                row = rows[0]
+            else:  # Windows - "rows" is a sqlite.Cursor object.
+                row = rows.fetchone()
             return row[0] if row else ""
         else:
             return ""
