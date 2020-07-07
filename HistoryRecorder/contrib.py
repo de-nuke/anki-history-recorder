@@ -103,7 +103,7 @@ class FilesSender(QThread):
     def run(self):
         files_submitted = 0
         for path in self.paths_to_files:
-            with open(path) as f:
+            with open(path, encoding='utf-8') as f:
                 response = post_file(UPLOAD_HOST, UPLOAD_PATH, FIELD_NAME, f)
             files_submitted += 1
             self.submitted.emit(
@@ -154,10 +154,12 @@ class SubmitFilesDialog(QtWidgets.QDialog):
         self.v_layout.addWidget(self.loading_msg_label)
         self.v_layout.addWidget(self.loading_pb)
 
-        server_tester = ServerTest()
-        server_tester.available.connect(self.on_server_available)
-        server_tester.not_available.connect(self.on_server_not_available)
-        server_tester.start()
+        self.server_tester = ServerTest()
+        self.server_tester.available.connect(self.on_server_available)
+        self.server_tester.not_available.connect(self.on_server_not_available)
+        self.server_tester.start()
+
+        self.files_sender = None
 
     def on_server_not_available(self, msg: str):
         show_message_box(
@@ -263,10 +265,10 @@ class SubmitFilesDialog(QtWidgets.QDialog):
         self.pb.show()
 
         # 5. Start a Thread which sends files and connect slots it its signals
-        files_sender = FilesSender(files_to_submit)
-        files_sender.submitted.connect(self.on_file_submitted)
-        files_sender.finished.connect(self.on_sending_finished)
-        files_sender.start()
+        self.files_sender = FilesSender(files_to_submit)
+        self.files_sender.submitted.connect(self.on_file_submitted)
+        self.files_sender.finished.connect(self.on_sending_finished)
+        self.files_sender.start()
 
     def on_file_submitted(
             self, i: int, total: int, filename: str, status: int, msg: str

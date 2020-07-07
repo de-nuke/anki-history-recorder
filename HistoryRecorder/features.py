@@ -227,7 +227,8 @@ class FeatureExtractor:
             self.card.id
         )
         if rows:
-            return rows[0][0]
+            row = rows.fetchone()
+            return row[0] if row else ""
         else:
             return ""
 
