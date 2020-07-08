@@ -21,6 +21,7 @@ class Session:
     start_time: Optional[float] = None
     storage: Storage = None
     prev_card_version: Card = None
+    enabled: bool = True
 
     exclude_reset = {'storage', 'sid'}
 
@@ -28,6 +29,9 @@ class Session:
         self.reset()
         self.start_time = time.time()
         self.storage.init_storage()
+
+    def toggle_on_off(self):
+        self.enabled = not self.enabled
 
     def reset(self):
         for field in fields(self):
@@ -42,9 +46,10 @@ class Session:
         self.answer_shown_at = time.time()
 
     def save_answer(self, reviewer: Reviewer, card: Card, ease: int):
-        self.answered_at = time.time()
-        features = self.get_answer_features(card, ease)
-        self.storage.save(features)
+        if self.enabled:
+            self.answered_at = time.time()
+            features = self.get_answer_features(card, ease)
+            self.storage.save(features)
 
     def before_card_show(self, text: str, card: Card, kind: str) -> str:
         self.prev_card_version = copy(card)

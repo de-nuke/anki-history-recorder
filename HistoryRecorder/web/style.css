@@ -1,0 +1,84 @@
+#history-recorder-status {
+    text-align: right;
+    padding-bottom: 10px;
+    margin-right: 10px;
+}
+
+#indicator.on {
+    color: #2196F3;
+}
+
+#indicator.off {
+    color: darkred;
+}
+
+ /* The.history-recorder-switch - the box around the slider */
+.history-recorder-switch {
+  position: relative;
+  display: inline-block;
+  width: 30px;
+  height: 17px;
+}
+
+/* Hide default HTML checkbox */
+.history-recorder-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.history-recorder-switch .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.history-recorder-switch .slider:before {
+  position: absolute;
+  content: "";
+  height: 13px;
+  width: 13px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(13px);
+  -ms-transform: translateX(13px);
+  transform: translateX(13px);
+}
+
+/* Rounded sliders */
+.history-recorder-switch .slider.round {
+  border-radius: 17px;
+}
+
+.history-recorder-switch .slider.round:before {
+  border-radius: 50%;
+}
+
+#history-recorder-status .text.on {
+    color: black;
+}
+
+#history-recorder-status .text.off {
+    color: gray;
+}
