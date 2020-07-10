@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     if (checkbox){
         checkbox.addEventListener("change", function (event) {
             setRecorderEnabled(event.target.checked);
-            pycmd("recorder_status_changed;" + event.target.checked)
+            pycmd("recorder_status_changed")
         })
     }
 });

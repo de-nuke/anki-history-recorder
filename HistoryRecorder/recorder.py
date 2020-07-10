@@ -9,11 +9,12 @@ from aqt.reviewer import Reviewer
 from aqt import mw
 
 from HistoryRecorder.features import FeatureExtractor
+from HistoryRecorder.gui import GUIManager
 from HistoryRecorder.storage import RemoteStorage, LocalStorage, Storage
 
 
 @dataclass
-class Session:
+class Recorder:
     answer_shown_at: float = 0
     answered_at: float = 0
     last_duration: float = 0
@@ -21,10 +22,11 @@ class Session:
     start_time: Optional[float] = None
     local_storage: Storage = None
     remote_storage: Storage = None
+    gui: GUIManager = None
     prev_card_version: Card = None
     enabled: bool = True
 
-    exclude_reset = {'local_storage', 'sid', 'remote_storage'}
+    exclude_reset = {'local_storage', 'sid', 'remote_storage', 'gui'}
 
     def start(self):
         self.reset()
@@ -32,8 +34,12 @@ class Session:
         self.local_storage.init_storage()
         self.remote_storage.init_storage()
 
+    def setup_gui(self):
+        self.gui.setup(recorder=self)
+
     def toggle_on_off(self):
         self.enabled = not self.enabled
+        return self.enabled
 
     def reset(self):
         for field in fields(self):
@@ -102,8 +108,9 @@ class Session:
 
 
 # Init global session object
-session = Session(
+recorder = Recorder(
     local_storage=LocalStorage(),
     remote_storage=RemoteStorage(),
+    gui=GUIManager(),
     sid=random.random()
 )
