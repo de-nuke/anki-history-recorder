@@ -9,9 +9,8 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
-from .const import UPLOAD_HOST, UPLOAD_PATH, FIELD_NAME
+from .const import UPLOAD_HOST, UPLOAD_PATH, FIELD_NAME, USER_FILES_DIR
 from .http_helper import post_file, server_test
-from .storage import USER_FILES_DIR
 
 
 FULL_PATH_USER_FILES_DIR = os.path.abspath(USER_FILES_DIR)
@@ -301,3 +300,14 @@ def show_files_choice_window():
 
 def open_upload_page():
     webbrowser.open(UPLOAD_HOST)
+
+
+class RecordsSender(QThread):
+    started = pyqtSignal()
+    finished = pyqtSignal(bool)
+
+    def run(self):
+        self.started.emit()
+        from time import sleep
+        sleep(2)
+        self.finished.emit(True)

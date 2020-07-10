@@ -43,3 +43,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
         })
     }
 });
+
+function showSendingLoader() {
+    console.log("Started");
+}
+
+function hideSendingLoader(isSuccess) {
+    console.log("Finished");
+}

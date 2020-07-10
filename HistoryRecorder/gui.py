@@ -80,6 +80,12 @@ class StatusIndicator:
         enabled = "true" if is_enabled else "false"
         mw.reviewer.bottom.web.eval(f"setRecorderEnabled({enabled})")
 
+    def show_sending_loader(self):
+        mw.reviewer.bottom.web.eval(f"showSendingLoader()")
+
+    def hide_sending_loader(self):
+        mw.reviewer.bottom.web.eval(f"hideSendingLoader()")
+
 
 class GUIManager:
     def __init__(self):
@@ -98,3 +104,9 @@ class GUIManager:
         is_enabled = self.recorder.toggle_on_off()
         self.recorder_menu.change_on_off_text(is_enabled)
         self.status_indicator.update_status(is_enabled)
+
+    def record_sending_started(self):
+        self.status_indicator.show_sending_loader()
+
+    def record_sending_finished(self, is_success):
+        self.status_indicator.hide_sending_loader()

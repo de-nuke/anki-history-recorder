@@ -1,3 +1,4 @@
+import os
 from types import SimpleNamespace
 
 from anki.consts import MODEL_CLOZE, MODEL_STD, CARD_TYPE_NEW, CARD_TYPE_LRN, \
@@ -87,3 +88,5 @@ MODEL_TYPES_MAP = {
 UPLOAD_HOST = 'history-recorder-storage-app.herokuapp.com'
 UPLOAD_PATH = '/form-upload'
 FIELD_NAME = 'file'
+BASE_DIR = os.path.dirname(__file__)
+USER_FILES_DIR = os.path.join(BASE_DIR, 'user_files')

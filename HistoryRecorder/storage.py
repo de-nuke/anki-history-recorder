@@ -3,13 +3,14 @@ import os
 import shutil
 from abc import abstractmethod
 
+from PyQt5.QtCore import pyqtSignal
 from aqt import mw
 
-from .const import HEADERS
+from .const import HEADERS, USER_FILES_DIR
+from .contrib import RecordsSender
 from .utils import normalize_to_filename
 
-BASE_DIR = os.path.dirname(__file__)
-USER_FILES_DIR = os.path.join(BASE_DIR, 'user_files')
+
 FILE_NAME_EXT = ".csv"
 
 
@@ -68,11 +69,34 @@ class RemoteStorage(Storage):
     """
     Storage that sends a record to the server, than pass it to AWS DynamoDB.
     """
+
+    def __init__(self):
+        self.records_sender = None
+        self._on_started_hooks = []
+        self._on_finished_hooks = []
+
     def save(self, data):
-        pass
+        self.records_sender = RecordsSender()
+        self.records_sender.started.connect(self.run_on_started_hooks)
+        self.records_sender.finished.connect(self.run_on_finished_hooks)
+        self.records_sender.start()
 
     def init_storage(self):
         pass
+
+    def on_started(self, func):
+        self._on_started_hooks.append(func)
+
+    def on_finished(self, func):
+        self._on_finished_hooks.append(func)
+
+    def run_on_started_hooks(self):
+        for hook in self._on_started_hooks:
+            hook()
+
+    def run_on_finished_hooks(self, is_success):
+        for hook in self._on_finished_hooks:
+            hook(is_success)
 
 
 class LocalStorage(Storage):

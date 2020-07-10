@@ -20,8 +20,8 @@ class Recorder:
     last_duration: float = 0
     sid: Optional[int] = None
     start_time: Optional[float] = None
-    local_storage: Storage = None
-    remote_storage: Storage = None
+    local_storage: LocalStorage = None
+    remote_storage: RemoteStorage = None
     gui: GUIManager = None
     prev_card_version: Card = None
     enabled: bool = True
@@ -33,6 +33,8 @@ class Recorder:
         self.start_time = time.time()
         self.local_storage.init_storage()
         self.remote_storage.init_storage()
+        self.remote_storage.on_started(self.gui.record_sending_started)
+        self.remote_storage.on_finished(self.gui.record_sending_finished)
 
     def setup_gui(self):
         self.gui.setup(recorder=self)
