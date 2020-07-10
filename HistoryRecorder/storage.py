@@ -1,6 +1,7 @@
 import csv
 import os
 import shutil
+from abc import abstractmethod
 
 from aqt import mw
 
@@ -52,6 +53,30 @@ def get_file_path():
 
 
 class Storage:
+    """Abstract base class for different storage classes"""
+
+    @abstractmethod
+    def save(self, data):
+        """Save data"""
+
+    @abstractmethod
+    def init_storage(self):
+        """Perform some initialization operations"""
+
+
+class RemoteStorage(Storage):
+    """
+    Storage that sends a record to the server, than pass it to AWS DynamoDB.
+    """
+    def save(self, data):
+        pass
+
+    def init_storage(self):
+        pass
+
+
+class LocalStorage(Storage):
+    """Storage that saves all the records in a local CSV files"""
     def __init__(self):
         self.file_path = None
 

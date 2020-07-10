@@ -9,7 +9,7 @@ from aqt.reviewer import Reviewer
 from aqt import mw
 
 from HistoryRecorder.features import FeatureExtractor
-from HistoryRecorder.storage import Storage
+from HistoryRecorder.storage import RemoteStorage, LocalStorage, Storage
 
 
 @dataclass
@@ -19,16 +19,18 @@ class Session:
     last_duration: float = 0
     sid: Optional[int] = None
     start_time: Optional[float] = None
-    storage: Storage = None
+    local_storage: Storage = None
+    remote_storage: Storage = None
     prev_card_version: Card = None
     enabled: bool = True
 
-    exclude_reset = {'storage', 'sid'}
+    exclude_reset = {'local_storage', 'sid', 'remote_storage'}
 
     def start(self):
         self.reset()
         self.start_time = time.time()
-        self.storage.init_storage()
+        self.local_storage.init_storage()
+        self.remote_storage.init_storage()
 
     def toggle_on_off(self):
         self.enabled = not self.enabled
@@ -49,7 +51,8 @@ class Session:
         if self.enabled:
             self.answered_at = time.time()
             features = self.get_answer_features(card, ease)
-            self.storage.save(features)
+            self.remote_storage.save(features)
+            self.local_storage.save(features)
 
     def before_card_show(self, text: str, card: Card, kind: str) -> str:
         self.prev_card_version = copy(card)
@@ -99,4 +102,8 @@ class Session:
 
 
 # Init global session object
-session = Session(storage=Storage(), sid=random.random())
+session = Session(
+    local_storage=LocalStorage(),
+    remote_storage=RemoteStorage(),
+    sid=random.random()
+)
