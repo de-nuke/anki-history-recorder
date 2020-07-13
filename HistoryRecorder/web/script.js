@@ -12,7 +12,7 @@ function setRecorderEnabled(isEnabled){
         if (label) {
             label.classList.remove('off');
             label.classList.add('on');
-            label.innerText = "Your answers are being recorded";
+            label.innerText = "Saving answers: ON ";
         }
         if (input) {
             input.checked = true;
@@ -26,14 +26,13 @@ function setRecorderEnabled(isEnabled){
         if (label) {
             label.classList.remove('on');
             label.classList.add('off');
-            label.innerText = "Answer recording is stopped";
+            label.innerText = "Saving answers: OFF";
         }
         if (input) {
             input.checked = false;
         }
     }
 }
-
 document.addEventListener('DOMContentLoaded', (event) => {
     let checkbox = document.getElementById("history-recorder-checkbox");
     if (checkbox){
@@ -45,9 +44,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 function showSendingLoader() {
-    console.log("Started");
+    let saving_info = document.getElementById("saving-info");
+    saving_info.classList.remove('hidden');
 }
 
 function hideSendingLoader(isSuccess) {
-    console.log("Finished");
+    let saving_info = document.getElementById("saving-info");
+    saving_info.classList.add('hidden');
 }

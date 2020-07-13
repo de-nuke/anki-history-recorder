@@ -3,7 +3,6 @@ import os
 import shutil
 from abc import abstractmethod
 
-from PyQt5.QtCore import pyqtSignal
 from aqt import mw
 
 from .const import HEADERS, USER_FILES_DIR
@@ -76,9 +75,9 @@ class RemoteStorage(Storage):
         self._on_finished_hooks = []
 
     def save(self, data):
-        self.records_sender = RecordsSender()
-        self.records_sender.started.connect(self.run_on_started_hooks)
-        self.records_sender.finished.connect(self.run_on_finished_hooks)
+        self.records_sender = RecordsSender([data])
+        self.records_sender.started.connect(self.run_on_started)
+        self.records_sender.finished.connect(self.run_on_finished)
         self.records_sender.start()
 
     def init_storage(self):
@@ -90,11 +89,11 @@ class RemoteStorage(Storage):
     def on_finished(self, func):
         self._on_finished_hooks.append(func)
 
-    def run_on_started_hooks(self):
+    def run_on_started(self):
         for hook in self._on_started_hooks:
             hook()
 
-    def run_on_finished_hooks(self, is_success):
+    def run_on_finished(self, is_success):
         for hook in self._on_finished_hooks:
             hook(is_success)
 

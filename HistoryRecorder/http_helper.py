@@ -1,10 +1,11 @@
 import binascii
+import json
 import os
 from http import client
 import mimetypes
 from http.client import HTTPResponse
 from pathlib import Path
-from typing import Tuple, TextIO
+from typing import Tuple, TextIO, List
 
 
 def get_filename(path: str) -> str:
@@ -71,3 +72,16 @@ def server_test(host: str) -> Tuple[bool, str]:
 def get_content_type(filename: str) -> str:
     """Get mime type based on file's name"""
     return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
+
+
+def post_records(host: str, path: str, records: List[dict]):
+    body = json.dumps(records).encode('utf-8')
+    content_type = "application/json"
+    h = client.HTTPConnection(host)
+    h.putrequest('POST', path)
+    h.putheader('content-type', content_type)
+    h.putheader('content-length', str(len(body)))
+    h.endheaders()
+    h.send(body)
+    response = h.getresponse()
+    return response

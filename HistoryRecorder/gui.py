@@ -22,7 +22,9 @@ class RecorderMenu(QMenu):
         self.open_dir_action = QAction("Open files folder", mw)
         self.open_browser_action = QAction("Open upload form in browser", mw)
         self.submit_history_action = QAction("Submit history...", mw)
-        self.on_off_action = QAction("Turn off", mw)
+
+        text = "Turn off" if recorder.enabled else "Turn on"
+        self.on_off_action = QAction(text, mw)
 
         # Add to self
         self.addAction(self.on_off_action)
@@ -46,11 +48,12 @@ class RecorderMenu(QMenu):
 class StatusIndicator:
     template = """
     <div id="history-recorder-status">
-        <span class="text {on_off_class}">{label}</span>
+        <span id="saving-info" class="hidden">saving... </span>
         <label class="history-recorder-switch">
             <input type="checkbox" {checked} id="history-recorder-checkbox">
             <span class="slider round"></span>
         </label>
+        <span class="text {on_off_class}">{label}</span>
     </div>
     """
 
@@ -69,11 +72,11 @@ class StatusIndicator:
         ]
 
     def get_body(self):
+        on = self.recorder.enabled
         return self.template.format(
-            checked="checked" if self.recorder.enabled else "",
-            label="Your answers are being recorded"
-            if self.recorder.enabled else "Answer recording is stopped",
-            on_off_class="on" if self.recorder.enabled else "off"
+            checked="checked" if on else "",
+            label="Saving answers: ON" if on else "Saving answers: OFF",
+            on_off_class="on" if on else "off"
         )
 
     def update_status(self, is_enabled: bool):

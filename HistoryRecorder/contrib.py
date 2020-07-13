@@ -9,9 +9,9 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
-from .const import UPLOAD_HOST, UPLOAD_PATH, FIELD_NAME, USER_FILES_DIR
-from .http_helper import post_file, server_test
-
+from .const import UPLOAD_HOST, UPLOAD_PATH, FIELD_NAME, USER_FILES_DIR, \
+    RECORDS_PATH
+from .http_helper import post_file, server_test, post_records
 
 FULL_PATH_USER_FILES_DIR = os.path.abspath(USER_FILES_DIR)
 EXCLUDED_FILES = [".gitkeep"]
@@ -306,8 +306,20 @@ class RecordsSender(QThread):
     started = pyqtSignal()
     finished = pyqtSignal(bool)
 
+    def __init__(self, records, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.records = records
+
     def run(self):
         self.started.emit()
-        from time import sleep
-        sleep(2)
-        self.finished.emit(True)
+        succeeded = False
+        try:
+            response = post_records(UPLOAD_HOST, RECORDS_PATH, self.records)
+            succeeded = response.status == 200
+        except Exception as e:
+            pass
+        self.finished.emit(succeeded)
+
+
+# On startup, fire a simple request to the server to wake it up
+ServerTest().start()

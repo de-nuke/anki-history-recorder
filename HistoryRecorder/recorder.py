@@ -10,7 +10,11 @@ from aqt import mw
 
 from HistoryRecorder.features import FeatureExtractor
 from HistoryRecorder.gui import GUIManager
-from HistoryRecorder.storage import RemoteStorage, LocalStorage, Storage
+from HistoryRecorder.storage import RemoteStorage, LocalStorage
+from HistoryRecorder.utils import get_config
+
+
+config = get_config()
 
 
 @dataclass
@@ -26,7 +30,9 @@ class Recorder:
     prev_card_version: Card = None
     enabled: bool = True
 
-    exclude_reset = {'local_storage', 'sid', 'remote_storage', 'gui'}
+    exclude_reset = {
+        'local_storage', 'sid', 'remote_storage', 'gui', 'enabled'
+    }
 
     def start(self):
         self.reset()
@@ -59,8 +65,9 @@ class Recorder:
         if self.enabled:
             self.answered_at = time.time()
             features = self.get_answer_features(card, ease)
-            self.remote_storage.save(features)
             self.local_storage.save(features)
+            if bool(config.get("live-sync")):
+                self.remote_storage.save(features)
 
     def before_card_show(self, text: str, card: Card, kind: str) -> str:
         self.prev_card_version = copy(card)
@@ -114,5 +121,6 @@ recorder = Recorder(
     local_storage=LocalStorage(),
     remote_storage=RemoteStorage(),
     gui=GUIManager(),
-    sid=random.random()
+    sid=random.random(),
+    enabled=bool(config.get("enabled-by-default", False))
 )

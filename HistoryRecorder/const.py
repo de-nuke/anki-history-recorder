@@ -1,11 +1,15 @@
 import os
-from types import SimpleNamespace
 
 from anki.consts import MODEL_CLOZE, MODEL_STD, CARD_TYPE_NEW, CARD_TYPE_LRN, \
     CARD_TYPE_RELEARNING, CARD_TYPE_REV, QUEUE_TYPE_PREVIEW, \
     QUEUE_TYPE_SIBLING_BURIED, QUEUE_TYPE_MANUALLY_BURIED, \
     QUEUE_TYPE_SUSPENDED, QUEUE_TYPE_LRN, QUEUE_TYPE_NEW, QUEUE_TYPE_REV, \
     QUEUE_TYPE_DAY_LEARN_RELEARN
+
+from HistoryRecorder.utils import get_config
+
+config = get_config()
+
 
 AUDIO_FORMATS = {
     "3gp", "aa", "aac", "aax", "act", "aiff", "alac", "amr", "ape", "au",
@@ -85,8 +89,15 @@ MODEL_TYPES_MAP = {
     MODEL_STD: "STANDARD"
 }
 
-UPLOAD_HOST = 'history-recorder-storage-app.herokuapp.com'
+if config.get('region') == "us":
+    UPLOAD_HOST = 'history-recorder-storage-us.herokuapp.com'
+elif config.get("region") == "local-server":
+    UPLOAD_HOST = "localhost:5000"
+else:
+    UPLOAD_HOST = 'history-recorder-storage-eu.herokuapp.com'
+
 UPLOAD_PATH = '/form-upload'
+RECORDS_PATH = '/records-upload'
 FIELD_NAME = 'file'
 BASE_DIR = os.path.dirname(__file__)
 USER_FILES_DIR = os.path.join(BASE_DIR, 'user_files')

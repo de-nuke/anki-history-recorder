@@ -79,6 +79,32 @@ input:checked + .slider:before {
     color: black;
 }
 
+#history-recorder-status .text {
+  width: 140px;
+  text-align: left;
+  display: inline-block;
+}
+
 #history-recorder-status .text.off {
     color: gray;
+}
+
+.hidden {
+  display: none;
+}
+
+#saving-info {
+  animation: saving-info-animation 0.5s linear infinite;
+}
+
+@keyframes saving-info-animation {
+  0% {
+    color: gray;
+  }
+  50% {
+    color: black;
+  }
+  100% {
+    color: gray;
+  }
 }

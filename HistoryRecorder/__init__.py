@@ -9,7 +9,7 @@ from .contrib import open_files_folder, show_files_choice_window, \
     open_upload_page
 from .gui import RecorderMenu
 from .recorder import recorder
-
+from .utils import get_config
 
 mw.addonManager.setWebExports(__name__, r"web/.*(css|js)")
 
@@ -35,7 +35,8 @@ def stop_recorder():
 
 
 def will_set_content(web_content: WebContent, context):
-    if isinstance(context, ReviewerBottomBar):
+    config = get_config()
+    if isinstance(context, ReviewerBottomBar) and config.get("display-status"):
         status_indicator = recorder.gui.status_indicator
         web_content.js.extend(status_indicator.get_js())
         web_content.css.extend(status_indicator.get_css())
