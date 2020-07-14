@@ -110,7 +110,7 @@ class LocalStorage(Storage):
 
     def get_file(self):
         if self.file_path:
-            return open(self.file_path, 'a', encoding='utf-8')
+            return open(self.file_path, 'a', encoding='utf-8', newline='\n')
         else:
             self.init_storage()
 
