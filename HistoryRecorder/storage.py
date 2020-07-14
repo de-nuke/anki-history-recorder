@@ -2,6 +2,7 @@ import csv
 import os
 import shutil
 from abc import abstractmethod
+from typing import Generator
 
 from aqt import mw
 
@@ -50,6 +51,14 @@ def get_file_name():
 
 def get_file_path():
     return os.path.join(USER_FILES_DIR, get_file_name())
+
+
+def read_user_data() -> Generator:
+    file_path = get_file_path()
+    with open(file_path, 'r', encoding='utf-8', newline='\n') as f:
+        reader = csv.DictReader(f, fieldnames=HEADERS)
+        for record in reader:
+            yield record
 
 
 class Storage:
