@@ -7,6 +7,7 @@ from aqt import mw, qconnect
 
 from HistoryRecorder.contrib import open_files_folder, show_files_choice_window, \
     open_upload_page
+from HistoryRecorder.visualization import show_graph_dialog
 
 
 class RecorderMenu(QMenu):
@@ -22,21 +23,23 @@ class RecorderMenu(QMenu):
         self.open_dir_action = QAction("Open files folder", mw)
         self.open_browser_action = QAction("Open upload form in browser", mw)
         self.submit_history_action = QAction("Submit history...", mw)
-
         text = "Turn off" if recorder.enabled else "Turn on"
         self.on_off_action = QAction(text, mw)
+        self.show_graphs = QAction("Show history graphs", mw)
 
         # Add to self
         self.addAction(self.on_off_action)
         self.addAction(self.open_dir_action)
         self.addAction(self.open_browser_action)
         self.addAction(self.submit_history_action)
+        self.addAction(self.show_graphs)
 
         # Connect actions signals to slots
         qconnect(self.open_dir_action.triggered, open_files_folder)
         qconnect(self.submit_history_action.triggered, show_files_choice_window)
         qconnect(self.open_browser_action.triggered, open_upload_page)
         qconnect(self.on_off_action.triggered, self.on_off_toggled.emit)
+        qconnect(self.show_graphs.triggered, show_graph_dialog)
 
     def change_on_off_text(self, is_enabled):
         if is_enabled:
