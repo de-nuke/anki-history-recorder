@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from datetime import datetime
 from itertools import *
 
 data = [
@@ -64,9 +65,25 @@ OrderedDict([('uid', '8585849153879800286'), ('sid', 'reeeeeeeeeeeee'), ('timest
 OrderedDict([('uid', '8585849153879800286'), ('sid', '0.0648098086322777'), ('timestamp', '1594664369.2091148'), ('card_id', '1591896608448'), ('deck_id', '1592249694602'), ('deck_name', 'Anatomy exam::Practical exam::Brain'), ('question', 'Lateral Brain'), ('answer', '4th Ventricle'), ('question_fields', '#2, OccludedImage, /2, Title'), ('answer_fields', 'OccludedImage, 2, Clinical, Title'), ('note_type', 'Cadaver Anatomy'), ('model_type', 'STANDARD'), ('question_has_cloze', 'False'), ('question_has_type_in', 'False'), ('question_has_type_in_cloze', 'False'), ('question_has_sound', 'False'), ('answer_has_sound', 'False'), ('question_has_video', 'False'), ('answer_has_video', 'False'), ('question_has_image', 'True'), ('answer_has_image', 'True'), ('ease', '3'), ('type', 'learning'), ('new_type', 'learning'), ('queue', 'learning'), ('new_queue', 'learning'), ('due', '1594665023'), ('reps', '2'), ('last_interval', '-60'), ('answered_at', '13-07-2020 20:19:29'), ('time_taken', '6857'), ('grade_time', '1.0317211151123047'), ('total_study_time', '6.832489728927612'), ('ESTIMATED_INTERVAL', '0')]),
 ]
 
-#
-# i = 0
-for key, group in groupby(data, key=lambda x: x['sid']):
-    items = list(group)
+
+def get_hour(record) -> int:
+    return datetime.strptime(record['answered_at'], "%d-%m-%Y %H:%M:%S").hour
 
 
+def get_count_by_hour():
+    counts = {}
+    for key, group in groupby(sorted(data, key=get_hour), key=get_hour):
+        counts[key] = len(list(group))
+
+    sorted_counts = OrderedDict()
+    for i in range(24):
+        if i not in counts:
+            sorted_counts[i] = 0
+        else:
+            sorted_counts[i] = counts[i]
+
+    return sorted_counts
+    # return [(i, count) for i in range(24)]
+
+
+print(dict(get_count_by_hour()))

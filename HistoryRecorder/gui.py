@@ -25,7 +25,7 @@ class RecorderMenu(QMenu):
         self.submit_history_action = QAction("Submit history...", mw)
         text = "Turn off" if recorder.enabled else "Turn on"
         self.on_off_action = QAction(text, mw)
-        self.show_graphs = QAction("Show history graphs", mw)
+        self.show_graphs = QAction("Show summary", mw)
 
         # Add to self
         self.addAction(self.on_off_action)

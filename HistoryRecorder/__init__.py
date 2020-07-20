@@ -11,7 +11,7 @@ from .gui import RecorderMenu
 from .recorder import recorder
 from .utils import get_config
 
-mw.addonManager.setWebExports(__name__, r"web/.*(css|js)")
+mw.addonManager.setWebExports(__name__, r"web/.*(css|js|jpg)")
 
 
 def did_answer_card(reviewer, card, ease):

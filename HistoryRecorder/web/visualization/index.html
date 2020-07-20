@@ -1,0 +1,392 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Bar Chart</title>
+    <script src="chart.min.js"></script>
+    <script src="utils.js"></script>
+    <script src="anychart-base.min.js"></script>
+    <script src="anychart-tag-cloud.min.js"></script>
+    <style>
+        html, body {
+            min-height: 100%;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            /*background-image: url("bg1.jpg");*/
+        }
+
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .page {
+            display: flex;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            height: 100%;
+            flex-direction: column;
+        }
+
+        .main {
+            display: flex;
+        }
+
+        .top-bar-container {
+            width: 100%;
+            text-align: center;
+        }
+
+        .graph-container {
+            flex: 0 0 auto;
+            width: 66%;
+        }
+
+        .info-container {
+            flex: 0 0 auto;
+            width: 33%;
+        }
+
+        .info-box {
+            margin: 0 20px 20px 20px;
+            border: 2px solid black;
+            padding: 10px;
+        }
+
+        .info-box span {
+            display: block;
+        }
+
+        .info-box span:last-child {
+            text-align: right;
+        }
+
+        #chartjs-tooltip {
+			opacity: 1;
+			position: absolute;
+			background: rgba(0, 0, 0, .7);
+			color: white;
+			border-radius: 3px;
+			-webkit-transition: all .1s ease;
+			transition: all .1s ease;
+			pointer-events: none;
+			-webkit-transform: translate(-50%, 0);
+			transform: translate(-50%, 0);
+		}
+
+		.chartjs-tooltip-key {
+			display: inline-block;
+			width: 10px;
+			height: 10px;
+			margin-right: 10px;
+		}
+    </style>
+</head>
+
+<body>
+<div class="page">
+    <div class="top-bar-container">
+        <h3>History recorder analytics</h3>
+    </div>
+    <div class="main">
+        <div class="graph-container">
+            <canvas id="canvas"></canvas>
+            <div id="chartjs-tooltip">
+                <table></table>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-box">
+                <span>Longest study session</span>
+                <span>30m</span>
+            </div>
+            <div class="info-box">
+                <span>Average think time</span>
+                <span>10 seconds</span>
+            </div>
+            <div class="info-box">
+                <span>Average ease rating time</span>
+                <span>2 seconds</span>
+            </div>
+
+            <!--            <div class="info-box">-->
+            <!--                <span>Longest study session</span>-->
+            <!--                <span>30m</span>-->
+            <!--            </div>-->
+        </div>
+    </div>
+    <div id="tag-cloud" style="height: 500px; width: 500px"></div>
+</div>
+<script>
+    let cursorX;
+    let cursorY;
+    let hideTooltipRadius = null;
+    let hideTooltipX = null;
+    let hideTooltipY = null;
+    Chart.defaults.global.tooltips.custom = function(tooltip) {
+			// Tooltip Element
+			var tooltipEl = document.getElementById('chartjs-tooltip');
+
+			// Hide if no tooltip
+			if (tooltip.opacity === 0) {
+				tooltipEl.style.opacity = 0;
+				return;
+			}
+
+			// Set caret Position
+			tooltipEl.classList.remove('above', 'below', 'no-transform');
+			if (tooltip.yAlign) {
+				tooltipEl.classList.add(tooltip.yAlign);
+			} else {
+				tooltipEl.classList.add('no-transform');
+			}
+
+			function getBody(bodyItem) {
+				return bodyItem.lines;
+			}
+
+			// Set Text
+			if (tooltip.body) {
+				var titleLines = tooltip.title || [];
+				var bodyLines = tooltip.body.map(getBody);
+
+				var innerHtml = '<thead>';
+
+				titleLines.forEach(function(title) {
+					innerHtml += '<tr><th>' + title + '</th></tr>';
+				});
+				innerHtml += '</thead><tbody>';
+
+                let prevBody = null;
+				bodyLines.forEach(function(body, i) {
+					var colors = tooltip.labelColors[i];
+					var style = 'background:' + window.chartColors.red;
+					style += '; border-color:' + colors.borderColor;
+					style += '; border-width: 2px';
+					var span = '<span class="chartjs-tooltip-key" style="' + style + '"></span>';
+					if (body[0] !== prevBody) {
+					    innerHtml += '<tr><td>' + span + body + '</td></tr>';
+					    prevBody = body[0];
+                    }
+				});
+				innerHtml += '</tbody>';
+
+				var tableRoot = tooltipEl.querySelector('table');
+				tableRoot.innerHTML = innerHtml;
+			}
+
+			var positionY = this._chart.canvas.offsetTop;
+			var positionX = this._chart.canvas.offsetLeft;
+
+			// Display, position, and set styles for font
+            let a = Math.abs(cursorX-hideTooltipX);
+            let b = Math.abs(cursorY-hideTooltipY);
+            let c = Math.sqrt(a*a + b*b);
+            if (c > hideTooltipRadius){
+                tooltipEl.style.opacity = "1";
+                tooltipEl.style.left = positionX + tooltip.caretX + 'px';
+                tooltipEl.style.top = positionY + tooltip.caretY + 'px';
+                tooltipEl.style.fontFamily = tooltip._bodyFontFamily;
+                tooltipEl.style.fontSize = tooltip.bodyFontSize;
+                tooltipEl.style.fontStyle = tooltip._bodyFontStyle;
+                tooltipEl.style.padding = tooltip.yPadding + 'px ' + tooltip.xPadding + 'px';
+            } else {
+                tooltipEl.style.opacity = "0";
+            }
+		};
+
+    anychart.onDocumentReady(function () {
+
+        var data = [
+            {
+                "x": "Mandarin chinese",
+                "value": 1090000000,
+                category: "Sino-Tibetan"
+            },
+            {"x": "English", "value": 983000000, category: "Indo-European"},
+            {"x": "Hindustani", "value": 544000000, category: "Indo-European"},
+            {"x": "Spanish", "value": 527000000, category: "Indo-European"},
+            {"x": "Arabic", "value": 422000000, category: "Afro-Asiatic"},
+            {"x": "Malay", "value": 281000000, category: "Austronesian"},
+            {"x": "Russian", "value": 267000000, category: "Indo-European"},
+            {"x": "Bengali", "value": 261000000, category: "Indo-European"},
+            {"x": "Portuguese", "value": 229000000, category: "Indo-European"},
+            {"x": "French", "value": 229000000, category: "Indo-European"},
+            {"x": "Hausa", "value": 150000000, category: "Afro-Asiatic"},
+            {"x": "Punjabi", "value": 148000000, category: "Indo-European"},
+            {"x": "Japanese", "value": 129000000, category: "Japonic"},
+            {"x": "German", "value": 129000000, category: "Indo-European"},
+            {"x": "Persian", "value": 121000000, category: "Indo-European"}
+        ];
+
+        // create a tag cloud chart
+        var chart = anychart.tagCloud(data);
+
+        // set the chart title
+        chart.title('15 most spoken languages')
+        // set array of angles, by which words will be placed
+        chart.angles([0])
+        // enable color range
+        chart.colorRange(true);
+        // set color range length
+        chart.colorRange().length('80%');
+
+        // display chart
+        chart.container("tag-cloud");
+        chart.draw();
+    });
+
+
+    var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    var color = Chart.helpers.color;
+    var barChartData = {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+            label: 'Dataset 1',
+            backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+            borderColor: window.chartColors.red,
+            borderWidth: 1,
+            data: [
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor()
+            ]
+        }]
+
+    };
+    var DATA_COUNT = 7;
+
+    var utils = Samples.utils;
+
+    function generateData() {
+        return utils.numbers({
+            count: DATA_COUNT,
+            min: 0,
+            max: 100
+        });
+    }
+
+    var polarAreaData = {
+        labels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+        datasets: [{
+            backgroundColor: color(window.chartColors.lightRed).alpha(0.5).rgbString(),
+            data: [24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24].map(i => i + 10)
+        },{
+            backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+            borderWidth: 1,
+            data: [0, 0, 0, 0, 0, 4, 10, 15, 24, 20, 13, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0].map(i => i + 10),
+        }]
+    }
+
+    function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+      }
+
+    window.onload = function () {
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d');
+
+        canvas.addEventListener('mousemove', function(evt) {
+            var mousePos = getMousePos(canvas, evt);
+            cursorX = mousePos.x;
+            cursorY = mousePos.y;
+        }, false);
+
+        window.myBar = new Chart(ctx, {
+            type: 'polarArea',
+            data: polarAreaData,
+
+            options: {
+                legend: false,
+                tooltips: {
+                    enabled: false,
+                    callbacks: {
+                        label: function (item) {
+                            let val = polarAreaData.datasets[1].data[item.index] - 10;
+                            return val.toString() + " cards";
+                        }
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 20,
+                        right: 20,
+                        top: 20,
+                        bottom: 20
+                    }
+                },
+                scale: {
+                    gridLines: false,
+                    ticks: {
+                        display: false
+                    }
+                },
+                hover: {
+                    animationDuration: 0,
+                },
+                animation: {
+                    onComplete: function(animation){
+                        let chart = animation.chart;
+                        let meta = chart.controller.getDatasetMeta(0);
+                        ctx.textAlign = "center";
+                        ctx.fillStyle = "#000000";
+                        ctx.lineWidth = 1;
+                        ctx.font = "10px sans-serif";
+                        meta.data.forEach(function (bar, index) {
+                            let angle = bar._model.startAngle;
+                            let text = bar._model.label;
+                            let dims = ctx.measureText(text);
+                            let height = dims.actualBoundingBoxAscent - dims.actualBoundingBoxDescent;
+                            let xpoint = bar._model.x + (Math.cos(angle) * (parseFloat(bar._chart.outerRadius) + 10));
+                            let ypoint = bar._model.y + (Math.sin(angle) * (parseFloat(bar._chart.outerRadius) + 10)) + height / 2;
+                            ctx.fillText(text, xpoint, ypoint);
+                            console.log(bar);
+                        });
+                        let x = meta.data[0]._model.x; //(chart.chartArea.left + chart.chartArea.right)/ 2;
+                        let y = meta.data[0]._model.y; //(chart.chartArea.bottom - chart.chartArea.top) / 2;
+                        let radius = meta.data[0]._chart.outerRadius * 0.3;
+                        ctx.beginPath();
+                        ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                        ctx.fillStyle = "white";
+                        ctx.fill();
+                        ctx.closePath();
+
+                        ctx.beginPath();
+                        ctx.arc(x, y, radius/2, 0, 2 * Math.PI);
+                        ctx.strokeStyle = "lightblue";
+                        ctx.lineWidth = 4;
+                        ctx.stroke();
+                        ctx.closePath();
+
+                        ctx.beginPath();
+                        ctx.moveTo(x, y);
+                        ctx.lineTo(x, y - radius/3);
+                        ctx.moveTo(x, y);
+                        ctx.lineTo(x + radius*0.2, y + radius*0.2);
+                        ctx.closePath();
+                        ctx.stroke();
+
+                        hideTooltipRadius = radius;
+                        hideTooltipX = x;
+                        hideTooltipY = y;
+                    }
+                }
+            },
+        });
+    };
+</script>
+</body>
+
+</html>
