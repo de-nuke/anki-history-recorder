@@ -87,13 +87,38 @@ class StatusIndicator:
         mw.reviewer.bottom.web.eval(f"setRecorderEnabled({enabled})")
 
     def show_sending_loader(self):
-        mw.reviewer.bottom.web.eval(f"showSendingLoader()")
+        # I have to check if function is defined, because when learning is
+        # finished, the screen changes, so all JS structures defined in
+        # previous webview are removed. The last execution of this function
+        # is preformed after screen change, and would try to call non-existing
+        # showSendingLoader function.
+        def exec_func(function_exists: bool):
+            if function_exists:
+                mw.reviewer.bottom.web.eval(f"showSendingLoader()")
+
+        mw.reviewer.bottom.web.evalWithCallback(
+            "typeof showSendingLoader !== 'undefined'", exec_func
+        )
 
     def hide_sending_loader(self):
-        mw.reviewer.bottom.web.eval(f"hideSendingLoader()")
+        # I have to check if function is defined, because when learning is
+        # finished, the screen changes, so all JS structures defined in
+        # previous webview are removed. The last execution of this function
+        # is preformed after screen change, and would try to call non-existing
+        # hideSendingLoader function.
+        def exec_func(function_exists: bool):
+            if function_exists:
+                mw.reviewer.bottom.web.eval(f"hideSendingLoader()")
+
+        mw.reviewer.bottom.web.evalWithCallback(
+            "typeof hideSendingLoader !== 'undefined'", exec_func
+        )
 
 
 class GUIManager:
+    """
+    Class responsible for communication between menu actions and status bar
+    """
     def __init__(self):
         self.recorder = None
         self.recorder_menu = None

@@ -34,6 +34,7 @@ function createWordCloud(data) {
 
     chart.angles([0])
     chart.colorScale(anychart.scales.linearColor(secondaryColor, primaryColor));
+    chart.background().fill("#F1FAEE");
 
     // display chart
     chart.container("word-cloud");

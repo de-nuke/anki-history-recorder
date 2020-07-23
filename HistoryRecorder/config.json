@@ -2,5 +2,6 @@
   "region": "eu",
   "enabled-by-default": true,
   "live-sync": true,
-  "display-status": true
+  "display-status": true,
+  "hide-stopwords": true
 }
