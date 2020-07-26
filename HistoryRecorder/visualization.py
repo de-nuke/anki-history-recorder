@@ -3,8 +3,11 @@ import os
 import re
 from collections import defaultdict, Counter
 from csv import DictReader
+from datetime import datetime, timedelta
+from itertools import groupby
 from operator import itemgetter
-from typing import Dict, List
+from statistics import mean
+from typing import Dict, List, Union
 
 from PyQt5.QtCore import QUrl
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -13,6 +16,7 @@ from PyQt5.QtWidgets import QDialog, QSizePolicy, QMessageBox
 from aqt.webview import AnkiWebView
 from aqt import mw
 
+from .const import ANSWERED_AT_FMT
 from .utils import get_config
 from . import stopwords
 from .storage import get_file_path
@@ -23,6 +27,7 @@ parent_dir = os.path.abspath(os.path.dirname(__file__))
 
 WORD_CLOUD = "word_cloud"
 ANSWERED_CARDS_CLOCK = "answered_cards_clock"
+OTHER_STATS = "other_stats"
 
 
 def show_message_box(
@@ -36,6 +41,47 @@ def show_message_box(
         msg_box.setInformativeText(text_info)
     msg_box.setStandardButtons(QMessageBox.Close)
     msg_box.exec_()
+
+
+def datetime_to_date(datetime_str: str) -> str:
+    """Parse datetime string and return only date string in locale format"""
+    fmt = "%d %B %Y"
+    return datetime.strptime(datetime_str, ANSWERED_AT_FMT).strftime(fmt)
+
+
+def format_duration(seconds: Union[float, int]) -> str:
+    """Format number of seconds into human-friendly form"""
+    td = timedelta(seconds=seconds)
+    *days_part, hours_part = str(td).split(", ")
+    days = int(days_part[0].split(" ")[0]) if days_part else 0
+    hours, minutes, seconds = [round(float(p)) for p in hours_part.split(":")]
+
+    days_word = "days" if days != 1 else "day"
+    days_str = f"{days} {days_word}" if days else ""
+    separator = "," if days else ""
+    hours_word = "hours" if hours != 1 else "hour"
+    hours_str = f"{hours} {hours_word}" if hours or days else ""
+    minutes_word = "minutes" if minutes != 1 else "minute"
+    minutes_str = f"{minutes} {minutes_word}" if minutes else ""
+    seconds_word = "seconds" if seconds != 1 else "second"
+    seconds_str = f"{seconds} {seconds_word}" if seconds else ""
+
+    full_str = f"{days_str}{separator} {hours_str} {minutes_str} {seconds_str}"
+    return full_str.strip()
+
+
+def format_deck_name(deck_name: str) -> str:
+    """
+    Change Anki's deck name (with :: as separator) to more human-friendly form
+    """
+    subdeck_names = deck_name.split("::")
+    if len(subdeck_names) == 1:
+        return subdeck_names[0]
+    elif len(subdeck_names) >= 2:
+        return f"{subdeck_names[0]} " \
+               f"<small>(\"{subdeck_names[-1]}\" subdeck)</small>"
+    else:
+        return ""
 
 
 class ChartWebView(AnkiWebView):
@@ -74,6 +120,8 @@ class ChartWebView(AnkiWebView):
             function = "createWordCloud"
         elif data_type == ANSWERED_CARDS_CLOCK:
             function = "createAnswersClock"
+        elif data_type == OTHER_STATS:
+            function = "displayOtherStats"
         else:
             function = "console.log"
 
@@ -115,6 +163,7 @@ class GraphDialog(Ui_Dialog, QDialog):
         self.webview.visualizeData(
             ANSWERED_CARDS_CLOCK, self.get_answered_cards_clock_data()
         )
+        self.webview.visualizeData(OTHER_STATS, self.get_stats())
 
     def get_word_cloud_data(self) -> List[Dict]:
         """Get most frequent words from answers"""
@@ -185,6 +234,67 @@ class GraphDialog(Ui_Dialog, QDialog):
                 for hour, count
                 in sorted(counted_hours.items(), key=itemgetter(0))
             ]
+        }
+
+    def get_stats(self):
+        data = self.get_data()
+
+        def select_columns(row):
+            try:
+                sid = row['sid']
+                deck_id = row['deck_id']
+                deck_name = row['deck_name']
+                think_time = float(row['time_taken']) / 1000
+                grade_time = float(row['grade_time'])
+                total_study_time = float(row['total_study_time'])
+                answered_at = row['answered_at']
+            except (KeyError, ValueError, TypeError) as e:
+                # Whenever something goes wrong, return empty tuple, so that it
+                # can be filtered out later
+                return tuple()
+            else:
+                return (
+                    sid,
+                    deck_id,
+                    deck_name,
+                    think_time,
+                    grade_time,
+                    total_study_time,
+                    answered_at
+                )
+
+        # I don't need all the columns, just a few of them
+        selected_data = list(filter(len, map(select_columns, data)))
+        average_think_time = mean(x[3] for x in selected_data)
+        average_grade_time = mean(x[4] for x in selected_data)
+
+        # Group by "sid" joined with "deck_id"
+        grouped_by_session = groupby(selected_data, lambda x: '|'.join(x[0:2]))
+
+        # Some initial, temporary values.
+        # Only 4th value matters - it's initial max value
+        longest_session = ('sid', 'deck_id', 'deck_name', -1, 'answered_at')
+        for key, group in grouped_by_session:
+            group_lst = list(group)
+            try:
+                first, *_, last = group_lst
+            except ValueError:
+                first = last = group_lst[0]
+
+            # Compare total_study_time with current max value
+            if last[5] > longest_session[3]:
+                longest_session = (
+                    last[0], last[1], last[2], last[5], first[6]
+                )
+
+        return {
+            'longest_study_session': {
+                'deck_name': format_deck_name(longest_session[2]),
+                'duration': format_duration(longest_session[3]),
+                'date': datetime_to_date(longest_session[4])
+            },
+            'average_think_time': format_duration(average_think_time),
+            'average_rating_time': format_duration(average_grade_time)
         }
 
     def get_data(self):

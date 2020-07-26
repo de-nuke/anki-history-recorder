@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="loader-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
+	<div class="loader-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
 
 	<div class="flex-column">
 		<div class="flex-row" style="max-height: 350px">
@@ -27,41 +27,20 @@
 		</div>
 		<div style="margin-top: 50px">
 			<div class="info-box">
-				<span>Longest study session</span>
-				<span>30m</span>
-			</div>
-			<div class="info-box">
 				<span>Average think time</span>
-				<span>10 seconds</span>
+				<span id="average-think-time"></span>
 			</div>
 			<div class="info-box">
 				<span>Average ease rating time</span>
-				<span>2 seconds</span>
+				<span id="average-rating-time"></span>
+			</div>
+			<div class="info-box">
+				<span>Longest study session</span>
+				<span id="longest-study-session"></span>
+				<span id="longest-study-session-extra"></span>
 			</div>
 		</div>
 	</div>
 	<script src="graph.js"></script>
-<script>
-// document.addEventListener('DOMContentLoaded', function () {
-// createWordCloud(
-// 		[
-//                 {"x": "English", "value": 983000000, "category": null},
-//                 {"x": "Hindustani", "value": 544000000, "category": null},
-//                 {"x": "Spanish", "value": 527000000, "category": null},
-//                 {"x": "Arabic", "value": 422000000, "category": null},
-//                 {"x": "Malay", "value": 281000000, "category": null},
-//                 {"x": "Russian", "value": 267000000, "category": null},
-//                 {"x": "Bengali", "value": 261000000, "category": null},
-//                 {"x": "Portuguese", "value": 229000000, "category": null},
-//                 {"x": "French", "value": 229000000, "category": null},
-//                 {"x": "Hausa", "value": 150000000, "category": null},
-//                 {"x": "Punjabi", "value": 148000000, "category": null},
-//                 {"x": "Japanese", "value": 129000000, "category": null},
-//                 {"x": "German", "value": 129000000, "category": null},
-//                 {"x": "Persian", "value": 121000000, "category": null}
-//             ]
-// )
-// })
-</script>
 </body>
 </html>

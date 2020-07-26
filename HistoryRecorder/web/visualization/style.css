@@ -50,10 +50,16 @@ canvas {
     display: block;
 }
 
-.info-box span:last-child {
+.info-box span:nth-child(2) {
     font-size: 20px;
     margin-top: 5px;
     color: #1d3557;
+}
+
+.info-box span:nth-child(3) {
+    /*font-size: 20px;*/
+    margin-top: 5px;
+    /*color: #1d3557;*/
 }
 
 #chartjs-tooltip {

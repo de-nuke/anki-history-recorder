@@ -101,3 +101,6 @@ RECORDS_PATH = '/records-upload'
 FIELD_NAME = 'file'
 BASE_DIR = os.path.dirname(__file__)
 USER_FILES_DIR = os.path.join(BASE_DIR, 'user_files')
+
+
+ANSWERED_AT_FMT = "%d-%m-%Y %H:%M:%S"

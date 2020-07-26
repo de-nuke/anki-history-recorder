@@ -8,10 +8,11 @@ from anki.cards import Card
 from aqt.reviewer import Reviewer
 from aqt import mw
 
-from HistoryRecorder.features import FeatureExtractor
-from HistoryRecorder.gui import GUIManager
-from HistoryRecorder.storage import RemoteStorage, LocalStorage
-from HistoryRecorder.utils import get_config
+from .const import ANSWERED_AT_FMT
+from .features import FeatureExtractor
+from .gui import GUIManager
+from .storage import RemoteStorage, LocalStorage
+from .utils import get_config
 
 
 config = get_config()
@@ -106,7 +107,7 @@ class Recorder:
             'last_interval': features.get_last_interval(),
             'reps': card.reps,
             'answered_at': time.strftime(
-                "%d-%m-%Y %H:%M:%S",
+                ANSWERED_AT_FMT,
                 time.localtime(self.answered_at)
             ),
             'time_taken': card.timeTaken(),

@@ -254,4 +254,16 @@ function createAnswersClock(data) {
     }
 }
 
+function displayOtherStats(data) {
+    let el1 = document.getElementById("longest-study-session");
+    if (el1) el1.innerText = data["longest_study_session"]['duration'];
 
+    let el2 = document.getElementById('longest-study-session-extra');
+    if (el2) el2.innerHTML = "Date: <b>" + data["longest_study_session"]["date"] + "</b>.<br> Deck name: <b>" + data["longest_study_session"]["deck_name"] + "</b>";
+
+    let el3 = document.getElementById("average-think-time");
+    if (el3) el3.innerText = data["average_think_time"];
+
+    let el4 = document.getElementById("average-rating-time");
+    if (el4) el4.innerText = data["average_rating_time"];
+}

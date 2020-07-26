@@ -2,6 +2,8 @@ from collections import OrderedDict
 from datetime import datetime
 from itertools import *
 
+from .const import ANSWERED_AT_FMT
+
 data = [
 # OrderedDict([('uid', 'uid'), ('sid', 'sid'), ('timestamp', 'timestamp'), ('card_id', 'card_id'), ('deck_id', 'deck_id'), ('deck_name', 'deck_name'), ('question', 'question'), ('answer', 'answer'), ('question_fields', 'question_fields'), ('answer_fields', 'answer_fields'), ('note_type', 'note_type'), ('model_type', 'model_type'), ('question_has_cloze', 'question_has_cloze'), ('question_has_type_in', 'question_has_type_in'), ('question_has_type_in_cloze', 'question_has_type_in_cloze'), ('question_has_sound', 'question_has_sound'), ('answer_has_sound', 'answer_has_sound'), ('question_has_video', 'question_has_video'), ('answer_has_video', 'answer_has_video'), ('question_has_image', 'question_has_image'), ('answer_has_image', 'answer_has_image'), ('ease', 'ease'), ('type', 'type'), ('new_type', 'new_type'), ('queue', 'queue'), ('new_queue', 'new_queue'), ('due', 'due'), ('reps', 'reps'), ('last_interval', 'last_interval'), ('answered_at', 'answered_at'), ('time_taken', 'time_taken'), ('grade_time', 'grade_time'), ('total_study_time', 'total_study_time'), ('ESTIMATED_INTERVAL', 'ESTIMATED_INTERVAL')]),
 OrderedDict([('uid', '8585849153879800286'), ('sid', '0.9623655058397161'), ('timestamp', '1594235203.5813935'), ('card_id', '1454744463190'), ('deck_id', '1592249830336'), ('deck_name', 'Botony::3.Strategies for enhancement in food production'), ('question', 'for the yield potential'), ('answer', '\\- well looked after\xa0 -the feeding of cattle\xa0 -stringent cleaning and hygiene'), ('question_fields', 'Front'), ('answer_fields', 'Meaning, Back, FrontSide'), ('note_type', 'Basic'), ('model_type', 'STANDARD'), ('question_has_cloze', 'False'), ('question_has_type_in', 'False'), ('question_has_type_in_cloze', 'False'), ('question_has_sound', 'False'), ('answer_has_sound', 'False'), ('question_has_video', 'False'), ('answer_has_video', 'False'), ('question_has_image', 'False'), ('answer_has_image', 'False'), ('ease', '3'), ('type', 'relearning'), ('new_type', 'review'), ('queue', 'learning'), ('new_queue', 'review'), ('due', '21'), ('reps', '6'), ('last_interval', '-600'), ('answered_at', '08-07-2020 21:06:43'), ('time_taken', '8668'), ('grade_time', '3.3709816932678223'), ('total_study_time', '8.647955417633057'), ('ESTIMATED_INTERVAL', '1')]),
@@ -67,7 +69,7 @@ OrderedDict([('uid', '8585849153879800286'), ('sid', '0.0648098086322777'), ('ti
 
 
 def get_hour(record) -> int:
-    return datetime.strptime(record['answered_at'], "%d-%m-%Y %H:%M:%S").hour
+    return datetime.strptime(record['answered_at'], ANSWERED_AT_FMT).hour
 
 
 def get_count_by_hour():
