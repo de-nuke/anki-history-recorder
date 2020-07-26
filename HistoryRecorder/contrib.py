@@ -319,3 +319,10 @@ class RecordsSender(QThread):
         except Exception as e:
             pass
         self.finished.emit(succeeded)
+
+
+# Ping server once to wake it up
+s = ServerTest()
+s.available.connect(lambda msg: s.deleteLater())
+s.not_available.connect(lambda msg: s.deleteLater())
+s.start()
