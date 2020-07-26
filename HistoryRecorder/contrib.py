@@ -319,7 +319,3 @@ class RecordsSender(QThread):
         except Exception as e:
             pass
         self.finished.emit(succeeded)
-
-
-# On startup, fire a simple request to the server to wake it up
-ServerTest().start()
