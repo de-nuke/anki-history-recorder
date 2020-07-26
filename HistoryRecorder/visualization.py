@@ -306,7 +306,7 @@ class GraphDialog(Ui_Dialog, QDialog):
                 'date': datetime_to_date(longest_session[4])
             },
             'average_think_time': format_duration(average_think_time),
-            'average_rating_time': format_duration(average_grade_time)
+            'average_rating_time': format_duration(average_grade_time) or "<1 second"
         }
 
     def get_data(self):
