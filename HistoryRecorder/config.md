@@ -2,13 +2,16 @@
 
 **`display-status`**
 
-Display status bar at the bottom of the window. Possible values: `true`, `false`.
+Display/hide status bar at the bottom of the window. Possible values: `true`, `false`.
 
 ---
 
 **`enabled-by-default`** 
 
-Recorder be enabled on startup. Possible values: `true`, `false`.
+Recorder is enabled on startup - it means that whenever you open Anki, recorder will be enabled. If you prefer 
+to have it disabled by default, set this option to `false`. 
+
+Possible values: `true`, `false`. 
 You can also enable/disable the recorder anytime using *"Tools -> History Recorder"* menu.
 
 ---
