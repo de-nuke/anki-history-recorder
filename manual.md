@@ -117,7 +117,7 @@ action to open a dialog window:
 
 #### Simple summary of your answers
 
-Collected data an be used to prepare a simple summary of your learning process. You can check
+Collected data can be used to prepare a simple summary of your learning process. You can check
 which words are the most common in the answers, at what time in a day you answer the most cards or 
 when was the longest study session.
 
