@@ -1,8 +1,17 @@
-TODO:
-1. Uploda to AnkiWeb
-1. Update windows path, update number
-1. Create Index
-1. CSV file description
+1. [Overview](#overview)
+2. [Quickstart](#quickstart)
+3. [Installation](#installation)
+    1. [From Anki Web](#via-anki-addon-manager-from-anki-web)
+    2. [Adding files manually](#add-files-manually)
+4. [Features & usage](#features-usage)
+    1. [Collecting data in the background](#collecting-data-in-the-background)
+    2. [Enable/disable saving answers](#enable-disable-saving-answers)
+    3. [Open data file](#open-data-file)
+    4. [Upload data file to the cloud](#upload-data-file-to-the-cloud)
+    5. [Simple summary of your answers](#simple-summary-of-your-answers)
+5. [Configuration](#configuration)
+6. [Known bugs & issues](#known-bugs-issues)
+7. [Reporting a problem](#reporting-a-problem)
 
 ## Overview
 **HistoryRecorder** is an Anki addon that collect various information and meta data
@@ -201,3 +210,8 @@ Following languages are supported (the list comes from [NLTK project](https://ww
 * `tajik`
 * `turkish`
 * `spanish`
+
+## Known bugs & issues
+*There's nothing here yet...*
+## Reporting a problem
+If you have any problems or you spot a bug, you can send me an email ([sutm.testing@gmail.com](mailto:sutm.testing@gmail.com)) or [start an issue on Github](https://github.com/de-nuke/anki-history-recorder/issues/new)
