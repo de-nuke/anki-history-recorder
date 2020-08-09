@@ -1,3 +1,5 @@
+# Description of data collected by the add-on
+
 History Recorder collects various information about the learning process. For each answered card, a record is created and saved in a CSV file as well as send to the cloud. 
 The record consists of 34 columns: [uid](#uid), [sid](#sid), [timestamp](#timestamp), [card_id](#card_id), [deck_id](#deck_id), [deck_name](#deck_name), [question](#question), [answer](#answer), [question_fields](#question_fields), [answer_fields](#answer_fields), [note_type](#note_type), [model_type](#model_type), [question_has_cloze](#question_has_cloze),
  [question_has_type_in](#question_has_type_in), [question_has_type_in_cloze](#question_has_type_in_cloze), [question_has_sound](#question_has_sound), [answer_has_sound](#answer_has_sound), [question_has_video](#question_has_video), [answer_has_video](#answer_has_video), [question_has_image](#question_has_image), [answer_has_image](#answer_has_image),
