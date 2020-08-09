@@ -5,14 +5,14 @@
 3. [Installation](#installation)
     1. [From Anki Web](#via-anki-addon-manager-from-anki-web)
     2. [Adding files manually](#add-files-manually)
-4. [Features & usage](#features-usage)
+4. [Features & usage](#features--usage)
     1. [Collecting data in the background](#collecting-data-in-the-background)
-    2. [Enable/disable saving answers](#enable-disable-saving-answers)
+    2. [Enable/disable saving answers](#enabledisable-saving-answers)
     3. [Open data file](#open-data-file)
     4. [Upload data file to the cloud](#upload-data-file-to-the-cloud)
     5. [Simple summary of your answers](#simple-summary-of-your-answers)
 5. [Configuration](#configuration)
-6. [Known bugs & issues](#known-bugs-issues)
+6. [Known bugs & issues](#known-bugs--issues)
 7. [Reporting a problem](#reporting-a-problem)
 
 ## Overview
