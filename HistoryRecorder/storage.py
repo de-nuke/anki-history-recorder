@@ -25,7 +25,7 @@ def ensure_directory_exists():
 
 
 def create_initial_file(path):
-    with open(path, 'w', encoding='utf-8') as f:
+    with open(path, 'w', encoding='utf-8', newline='\n') as f:
         writer = csv.writer(f)
         writer.writerow(HEADERS)
 
@@ -131,7 +131,7 @@ class LocalStorage(Storage):
         file_path = get_file_path()
         try:
             correct = True
-            with open(file_path, encoding='utf-8') as f:
+            with open(file_path, encoding='utf-8', newline='\n') as f:
                 reader = csv.reader(f)
                 try:
                     first_row = next(reader)

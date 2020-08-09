@@ -243,7 +243,7 @@ function makeChartData(data) {
 
 function createAnswersClock(data) {
     maxValue = Math.max(...data.data);
-    radiusOffset = Math.round(offsetPercentage * maxValue);
+    radiusOffset = Math.floor(offsetPercentage * maxValue);
     ratio = (maxValue - radiusOffset)/maxValue;
 
     if (window.myBar) {

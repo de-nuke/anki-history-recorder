@@ -6,7 +6,6 @@ from csv import DictReader
 from datetime import datetime, timedelta
 from itertools import groupby
 from operator import itemgetter
-from statistics import mean
 from typing import Dict, List, Union
 
 from PyQt5.QtCore import QUrl
@@ -21,6 +20,19 @@ from .utils import get_config
 from . import stopwords
 from .storage import get_file_path
 from .dialog_ui import Ui_Dialog
+
+try:
+    from statistics import mean
+except ImportError:
+    # Doesn't work on Windows and following error is raised:
+    # ModuleNotFoundError: No module named 'statistics'
+    # Simple "mean" function is implemented instead
+    def mean(lst):
+        if iter(lst) is lst:
+            lst = list(lst)
+        n = len(lst)
+        assert n > 0
+        return sum(lst) / len(lst)
 
 parent_dir = os.path.abspath(os.path.dirname(__file__))
 
@@ -294,7 +306,7 @@ class GraphDialog(Ui_Dialog, QDialog):
                 'date': datetime_to_date(longest_session[4])
             },
             'average_think_time': format_duration(average_think_time),
-            'average_rating_time': format_duration(average_grade_time)
+            'average_rating_time': format_duration(average_grade_time) or "<1 second"
         }
 
     def get_data(self):
