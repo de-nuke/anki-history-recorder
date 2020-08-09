@@ -1,3 +1,5 @@
+# History Recorder add-on user manual
+
 1. [Overview](#overview)
 2. [Quickstart](#quickstart)
 3. [Installation](#installation)
