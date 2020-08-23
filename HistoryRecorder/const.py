@@ -28,11 +28,11 @@ VIDEO_FORMATS = {
 }
 
 HEADERS = [
-    'uid',
+    # 'uid',
     'sid',
     'timestamp',
-    'card_id',
-    'deck_id',
+    # 'card_id',
+    # 'deck_id',
     'deck_name',
     'question',
     'answer',

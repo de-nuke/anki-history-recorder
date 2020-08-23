@@ -77,11 +77,11 @@ class Recorder:
     def get_answer_features(self, card: Card, ease: int):
         features = FeatureExtractor(card, self.prev_card_version)
         return {
-            'uid': mw.pm.meta.get('id'),
+            # 'uid': mw.pm.meta.get('id'),
             'sid': self.sid,
             'timestamp': time.time(),
-            'card_id': card.id,
-            'deck_id': card.did,
+            # 'card_id': card.id,
+            # 'deck_id': card.did,
             'deck_name': features.get_deck_name(),
             'question': features.get_question_text(),
             'answer': features.get_answer_text(),
