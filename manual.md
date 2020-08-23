@@ -16,8 +16,6 @@
 7. [Reporting a problem](#reporting-a-problem)
 
 ## Overview 
-<sub><sup>[Go to top](#history-recorder-add-on-user-manual)</sup></sub>
-
 **HistoryRecorder** is an Anki addon that collect various information and meta data
 from learning process. Collected data is a source of information about how a user performed on specific cards. 
 The aim of the addon is to gather enough data for a machine learning process and for creating a neural network 
@@ -26,9 +24,9 @@ in the background and do not affect learning process.
 
 **HistoryRecorder** addon is a part of a research made for a master thesis, which focus on running a machine learning process mentioned above.
 
-## Quickstart
 <sub><sup>[Go to top](#history-recorder-add-on-user-manual)</sup></sub>
 
+## Quickstart
 It's very easy to start using HistoryRecorder.
 1. First, install an addon via Anki Addon Manager using this code: [1011000875](https://ankiweb.net/shared/info/1011000875)
 2. Restart Anki if prompted to do so. 
@@ -36,6 +34,8 @@ It's very easy to start using HistoryRecorder.
 All you have to do is to answer some cards and learn new things :) **Thanks for your contribution to my research!** 
 
 More advanced use of the addon is described below. 
+
+<sub><sup>[Go to top](#history-recorder-add-on-user-manual)</sup></sub>
 
 ## Installation
 
@@ -62,6 +62,8 @@ directory via Anki. Go to `Tools` | `Add-ons` | `View files` - directory should 
     * For Windows: `%appdata%/Anki2/addons21`
     * For Mac: `~/Library/Application Support/Anki2/addons21`
     
+<sub><sup>[Go to top](#history-recorder-add-on-user-manual)</sup></sub>
+    
 ## Features & usage
 HistoryRecorder's main feature is to collect data in the background, but it comes 
 with a few more features that let you control it. This section describe all features of the addon and describe the usage of it.
@@ -81,6 +83,7 @@ you will see a pulsing *"saving..."* massage:
 
 You can disable this indicator [in a config](#display-status)
  
+<sub><sup>[Go to top](#history-recorder-add-on-user-manual)</sup></sub>
   
 #### Enable/disable saving answers
 After installing the addon, it is enabled by default. It means that it will save every answer. 
@@ -107,6 +110,8 @@ If you have this indicator [hidden](#display-status), you can still enable/disab
 Records are saved in a CSV file, separate for each user. The file can be found in
 a `user_files` directory in the addon directory. To open this directory from Anki, 
 click `Tools` | `History Recorder` | `Open files folder` menu action.
+
+<sub><sup>[Go to top](#history-recorder-add-on-user-manual)</sup></sub>
 
 #### Upload data file to the cloud
 You can upload generated data file to the cloud. Your records will increase the amount of data the machine learning will be run on therefore 
@@ -142,6 +147,8 @@ If you have some records already saved in a file, you should see such a window:
 
 Word cloud generated for answers do not take stopwords (ex. "a", "an", "the", etc) into 
 account by default. You can [change it in a configuration](#hide-stopwords).
+
+<sub><sup>[Go to top](#history-recorder-add-on-user-manual)</sup></sub>
 
 ## Configuration
 You can configure the addon to better fit your preferences. You can do via `Tools` | `Add-ons` | `Config` window. 
@@ -216,7 +223,11 @@ Following languages are supported (the list comes from [NLTK project](https://ww
 * `turkish`
 * `spanish`
 
+<sub><sup>[Go to top](#history-recorder-add-on-user-manual)</sup></sub>
+
 ## Known bugs & issues
 *There's nothing here yet...*
 ## Reporting a problem
 If you have any problems or you spot a bug, you can send me an email ([sutm.testing@gmail.com](mailto:sutm.testing@gmail.com)), [start an issue on Github](https://github.com/de-nuke/anki-history-recorder/issues/new) or post your comment [in the Anki forum official thread](https://forums.ankiweb.net/t/history-recorder-support-page/2087)
+
+<sub><sup>[Go to top](#history-recorder-add-on-user-manual)</sup></sub>
