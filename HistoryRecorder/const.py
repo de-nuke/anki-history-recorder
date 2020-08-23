@@ -6,7 +6,7 @@ from anki.consts import MODEL_CLOZE, MODEL_STD, CARD_TYPE_NEW, CARD_TYPE_LRN, \
     QUEUE_TYPE_SUSPENDED, QUEUE_TYPE_LRN, QUEUE_TYPE_NEW, QUEUE_TYPE_REV, \
     QUEUE_TYPE_DAY_LEARN_RELEARN
 
-from HistoryRecorder.utils import get_config
+from .utils import get_config
 
 config = get_config()
 

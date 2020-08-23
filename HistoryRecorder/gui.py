@@ -5,9 +5,9 @@ from PyQt5.QtWidgets import (
 )
 from aqt import mw, qconnect
 
-from HistoryRecorder.contrib import open_files_folder, show_files_choice_window, \
+from .contrib import open_files_folder, show_files_choice_window, \
     open_upload_page
-from HistoryRecorder.visualization import show_graph_dialog
+from .visualization import show_graph_dialog
 
 
 class RecorderMenu(QMenu):
