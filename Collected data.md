@@ -2,11 +2,9 @@
 
 History Recorder collects various information about the learning process. For each answered card, a record is created and saved in a CSV file as well as send to the cloud. 
 The record consists of 31 columns: 
-<!--[uid](#uid), -->
+<!--[uid](#uid), --> 
 [sid](#sid), 
-[timestamp](#timestamp), 
-<!--[card_id](#card_id), 
-[deck_id](#deck_id), -->
+[timestamp](#timestamp), <!--[card_id](#card_id), [deck_id](#deck_id), -->
 [deck_name](#deck_name),
 [question](#question), 
 [answer](#answer), 
