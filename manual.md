@@ -66,8 +66,7 @@ with a few more features that let you control it. This section describe all feat
 This is the main feature of the addon. Whenever you answer a card and rate its ease, HistoryRecorder 
 performs a few actions to fetch information about the answering process. All data that was retrieved create *a record*.
 *The record* is then saved in a file and automatically send to the cloud. 
-*The record* consists of various information, for example: timestamp of the answer, 
-user id, card id, deck name, card question and answer, time taken to answer, etc.
+*The record* consists of various information, for example: timestamp of the answer, deck name, card question and answer, time taken to answer, etc.
 You can find a detailed description of what data is collected in a [Collected Data description](https://github.com/de-nuke/anki-history-recorder/blob/master/Collected%20data.md) 
  
 This process is enabled by default and runs automatically. It doesn't require any user interaction. However, to 
