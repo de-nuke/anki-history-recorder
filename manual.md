@@ -224,6 +224,6 @@ Following languages are supported (the list comes from [NLTK project](https://ww
 ## Known bugs & issues
 *There's nothing here yet...*
 ## Reporting a problem
-If you have any problems or you spot a bug, you can send me an email ([sutm.testing@gmail.com](mailto:sutm.testing@gmail.com)), [start an issue on Github](https://github.com/de-nuke/anki-history-recorder/issues/new) or post your comment [in the Anki forum official thread](https://forums.ankiweb.net/t/history-recorder-support-page/2087)
+If you have any problems or you spot a bug, you can send me an email ([historyrecorder@outlook.com](mailto:historyrecorder@outlook.com)), [start an issue on Github](https://github.com/de-nuke/anki-history-recorder/issues/new) or post your comment [in the Anki forum official thread](https://forums.ankiweb.net/t/history-recorder-support-page/2087)
 
 <sub><sup>[Go to top](#history-recorder-add-on-user-manual)</sup></sub>
