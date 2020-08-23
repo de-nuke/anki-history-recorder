@@ -254,7 +254,11 @@ class GraphDialog(Ui_Dialog, QDialog):
         def select_columns(row):
             try:
                 sid = row['sid']
-                deck_id = row['deck_id']
+
+                # deck_id is no longer saved, so use name instead,
+                # just to fill the tuple
+                deck_id = row['deck_name']
+
                 deck_name = row['deck_name']
                 think_time = float(row['time_taken']) / 1000
                 grade_time = float(row['grade_time'])
