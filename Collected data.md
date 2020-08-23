@@ -1,34 +1,67 @@
 # Description of data collected by the add-on
 
 History Recorder collects various information about the learning process. For each answered card, a record is created and saved in a CSV file as well as send to the cloud. 
-The record consists of 34 columns: [uid](#uid), [sid](#sid), [timestamp](#timestamp), [card_id](#card_id), [deck_id](#deck_id), [deck_name](#deck_name), [question](#question), [answer](#answer), [question_fields](#question_fields), [answer_fields](#answer_fields), [note_type](#note_type), [model_type](#model_type), [question_has_cloze](#question_has_cloze),
- [question_has_type_in](#question_has_type_in), [question_has_type_in_cloze](#question_has_type_in_cloze), [question_has_sound](#question_has_sound), [answer_has_sound](#answer_has_sound), [question_has_video](#question_has_video), [answer_has_video](#answer_has_video), [question_has_image](#question_has_image), [answer_has_image](#answer_has_image),
- [ease](#ease), [type](#type), [new_type](#new_type), [queue](#queue), [new_queue](#new_queue), [due](#due), [reps](#reps), [last_interval](#last_interval), [answered_at](answered_at), [time_taken](time_taken), [grade_time](#grade_time), [total_study_time](total_study_time), [ESTIMATED_INTERVAL](#ESTIMATED_INTERVAL) .
+The record consists of 31 columns: 
+<!--[uid](#uid), -->
+[sid](#sid), 
+[timestamp](#timestamp), 
+<!--[card_id](#card_id), 
+[deck_id](#deck_id), -->
+[deck_name](#deck_name),
+[question](#question), 
+[answer](#answer), 
+[question_fields](#question_fields), 
+[answer_fields](#answer_fields), 
+[note_type](#note_type), 
+[model_type](#model_type), 
+[question_has_cloze](#question_has_cloze),
+ [question_has_type_in](#question_has_type_in), 
+ [question_has_type_in_cloze](#question_has_type_in_cloze), 
+ [question_has_sound](#question_has_sound), 
+ [answer_has_sound](#answer_has_sound),
+ [question_has_video](#question_has_video),
+ [answer_has_video](#answer_has_video),
+ [question_has_image](#question_has_image),
+ [answer_has_image](#answer_has_image),
+ [ease](#ease), 
+ [type](#type), 
+ [new_type](#new_type),
+ [queue](#queue),
+ [new_queue](#new_queue), 
+ [due](#due), 
+ [reps](#reps),
+ [last_interval](#last_interval),
+ [answered_at](answered_at), 
+ [time_taken](time_taken),
+ [grade_time](#grade_time),
+ [total_study_time](total_study_time),
+ [ESTIMATED_INTERVAL](#estimated_interval) .
  
  
 This document describes what type of data is collected in each column and why.
     
     
 ### Fields
-##### `uid`
+<!--##### `uid`
 User ID. Used as one of the fields that uniquely identify a record (1/4). 
-
+-->
 ##### `sid`
-Session ID. *Session* means "learning session". Each time you open Anki, new session ID is generated. It is simply random float number. This field is used as one of the fields that uniquely identify a record (2/4).
+Session ID. *Session* means "learning session". Each time you open Anki, new session ID is generated. It is simply random float number. This field is used as one of the fields that uniquely identify a record (1/2).
 
 ##### `timestamp` 
-Moment in time when the record was created (more or less it's the moment when you rate an ease of the card). This field is used as one of the fields that uniquely identify a record (3/4).
-
+Moment in time when the record was created (more or less it's the moment when you rate an ease of the card). This field is used as one of the fields that uniquely identify a record (2/2).
+<!--
 ##### `card_id` 
 ID of the card. This field is used as one of the fields that uniquely identify a record (4/4).
-
+-->
+<!--
 ##### `deck_id`
 ID of the deck.
-
+-->
 ##### `deck_name`
 Name of the deck. Might be useful in a lexical analysys to retrieve key words describing the deck.
 
-##### `questionb`
+##### `question`
 Text of the front side of the card (question). The text is a clear text without HTML markups, images, or any elements from card template. Might be useful in a lexical analysys. If there is only image, sound or video and only template HTML, then this field is empty.
 
 ##### `answer`
