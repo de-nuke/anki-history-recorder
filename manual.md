@@ -15,7 +15,9 @@
 6. [Known bugs & issues](#known-bugs--issues)
 7. [Reporting a problem](#reporting-a-problem)
 
-## Overview
+## Overview 
+<sub><sup>[Go to top](#history-recorder-add-on-user-manual)</sup></sub>
+
 **HistoryRecorder** is an Anki addon that collect various information and meta data
 from learning process. Collected data is a source of information about how a user performed on specific cards. 
 The aim of the addon is to gather enough data for a machine learning process and for creating a neural network 
@@ -25,6 +27,8 @@ in the background and do not affect learning process.
 **HistoryRecorder** addon is a part of a research made for a master thesis, which focus on running a machine learning process mentioned above.
 
 ## Quickstart
+<sub><sup>[Go to top](#history-recorder-add-on-user-manual)</sup></sub>
+
 It's very easy to start using HistoryRecorder.
 1. First, install an addon via Anki Addon Manager using this code: [1011000875](https://ankiweb.net/shared/info/1011000875)
 2. Restart Anki if prompted to do so. 
