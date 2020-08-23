@@ -28,7 +28,7 @@ in the background and do not affect learning process.
 
 ## Quickstart
 It's very easy to start using HistoryRecorder.
-1. First, install an addon via Anki Addon Manager using this code: [1011000875](https://ankiweb.net/shared/info/1011000875)
+1. First, install an addon via Anki Addon Manager using this code: [2039239436](https://ankiweb.net/shared/info/2039239436)
 2. Restart Anki if prompted to do so. 
 2. Voilà! HistoryRecorder is already set up, enabled and configured. 
 All you have to do is to answer some cards and learn new things :) **Thanks for your contribution to my research!** 
@@ -49,7 +49,7 @@ The addon requires Anki version **2.1.22 or later**
 The are 2 ways of adding the addon:
 ##### Via Anki Addon Manager from Anki Web. 
 1. Open the Install Add-on dialog by selecting `Tools` | `Add-ons` | `Browse & Install` in Anki.
-2. Input [1011000875](https://ankiweb.net/shared/info/1011000875) into the text box labeled `Code` and press the `OK` button to proceed.
+2. Input [2039239436](https://ankiweb.net/shared/info/2039239436) into the text box labeled `Code` and press the `OK` button to proceed.
 3. Restart Anki when prompted to do so in order to complete the installation of HistoryRecorder
 
 ##### Add files manually.
