@@ -82,9 +82,7 @@ you will see a pulsing *"saving..."* massage:
 ![Saving message in the bottom bar](res/saving_msg.png)
 
 You can disable this indicator [in a config](#display-status)
- 
-<sub><sup>[Go to top](#history-recorder-add-on-user-manual)</sup></sub>
-  
+   
 #### Enable/disable saving answers
 After installing the addon, it is enabled by default. It means that it will save every answer. 
 If, for any reason, you don't want to save some answers (for a private deck or something) you can easily turn on/off the addon
@@ -110,8 +108,6 @@ If you have this indicator [hidden](#display-status), you can still enable/disab
 Records are saved in a CSV file, separate for each user. The file can be found in
 a `user_files` directory in the addon directory. To open this directory from Anki, 
 click `Tools` | `History Recorder` | `Open files folder` menu action.
-
-<sub><sup>[Go to top](#history-recorder-add-on-user-manual)</sup></sub>
 
 #### Upload data file to the cloud
 You can upload generated data file to the cloud. Your records will increase the amount of data the machine learning will be run on therefore 
