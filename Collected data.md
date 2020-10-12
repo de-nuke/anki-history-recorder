@@ -29,10 +29,10 @@ The record consists of 31 columns:
  [due](#due), 
  [reps](#reps),
  [last_interval](#last_interval),
- [answered_at](answered_at), 
- [time_taken](time_taken),
+ [answered_at](#answered_at), 
+ [time_taken](#time_taken),
  [grade_time](#grade_time),
- [total_study_time](total_study_time),
+ [total_study_time](#total_study_time),
  [ESTIMATED_INTERVAL](#estimated_interval) .
  
  
